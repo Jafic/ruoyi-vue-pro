@@ -11,6 +11,9 @@ spring:
       - org.springframework.ai.vectorstore.qdrant.autoconfigure.QdrantVectorStoreAutoConfiguration # 禁用 AI 模块的 Qdrant，手动创建
       - org.springframework.ai.vectorstore.milvus.autoconfigure.MilvusVectorStoreAutoConfiguration # 禁用 AI 模块的 Milvus，手动创建
   # 数据源配置项
+  # 说明：接入 Apollo 后，优先使用 Apollo 命名空间 local/application 中的
+  # spring.datasource.dynamic.*（含 master/slave 的 url、username、password）。
+  # 下方本地值仅作 Apollo 未配置或本地离线时的兜底；生产凭据请放到 Apollo，勿长期依赖仓库明文。
   datasource:
     druid: # Druid 【监控】相关的全局配置
       web-stat-filter:
