@@ -89,6 +89,7 @@ import { LoginStateEnum, useFormValid, useLoginState } from './useLogin'
 defineOptions({ name: 'LoginForm' })
 
 const { t } = useI18n()
+const message = useMessage()
 const iconAvatar = useIcon({ icon: 'ep:avatar' })
 const iconLock = useIcon({ icon: 'ep:lock' })
 const formLogin = ref()
@@ -107,12 +108,14 @@ const LoginRules = {
   username: [required],
   password: [required]
 }
+/** 隐藏租户框时，固定使用 .env 默认租户名 */
+const defaultTenantName = import.meta.env.VITE_APP_DEFAULT_LOGIN_TENANT || ''
 const loginData = reactive({
   isShowPassword: false,
   captchaEnable: import.meta.env.VITE_APP_CAPTCHA_ENABLE,
   tenantEnable: import.meta.env.VITE_APP_TENANT_ENABLE,
   loginForm: {
-    tenantName: import.meta.env.VITE_APP_DEFAULT_LOGIN_TENANT || '',
+    tenantName: defaultTenantName,
     username: import.meta.env.VITE_APP_DEFAULT_LOGIN_USERNAME || '',
     password: import.meta.env.VITE_APP_DEFAULT_LOGIN_PASSWORD || '',
     captchaVerification: '',
@@ -122,6 +125,8 @@ const loginData = reactive({
 
 // 获取验证码
 const getCode = async () => {
+  // 弹滑块 / 登录前先换好 tenant-id，避免后续请求缺租户标识
+  await getTenantId()
   // 情况一，未开启：则直接登录
   if (loginData.captchaEnable === 'false') {
     await handleLogin({})
@@ -131,14 +136,19 @@ const getCode = async () => {
     verify.value.show()
   }
 }
-// 获取租户 ID
+// 获取租户 ID（始终用默认租户名，避免「记住我」里的旧名称）
 const getTenantId = async () => {
   if (loginData.tenantEnable === 'true') {
-    const res = await LoginApi.getTenantIdByName(loginData.loginForm.tenantName)
+    loginData.loginForm.tenantName = defaultTenantName
+    const res = await LoginApi.getTenantIdByName(defaultTenantName)
+    if (res == null) {
+      message.error(`未找到租户「${defaultTenantName}」，请核对库中租户名与 VITE_APP_DEFAULT_LOGIN_TENANT`)
+      return
+    }
     authUtil.setTenantId(res)
   }
 }
-// 记住我
+// 记住我（不恢复租户名，租户框已隐藏）
 const getLoginFormCache = () => {
   const loginForm = authUtil.getLoginForm()
   if (loginForm) {
@@ -147,18 +157,7 @@ const getLoginFormCache = () => {
       username: loginForm.username ? loginForm.username : loginData.loginForm.username,
       password: loginForm.password ? loginForm.password : loginData.loginForm.password,
       rememberMe: loginForm.rememberMe,
-      tenantName: loginForm.tenantName ? loginForm.tenantName : loginData.loginForm.tenantName
-    }
-  }
-}
-// 根据域名，获得租户信息
-const getTenantByWebsite = async () => {
-  if (loginData.tenantEnable === 'true') {
-    const website = location.host
-    const res = await LoginApi.getTenantByWebsite(website)
-    if (res) {
-      loginData.loginForm.tenantName = res.name
-      authUtil.setTenantId(res.id)
+      tenantName: defaultTenantName
     }
   }
 }
@@ -168,11 +167,15 @@ const handleLogin = async (params: any) => {
   loginLoading.value = true
   try {
     await getTenantId()
+    if (loginData.tenantEnable === 'true' && !authUtil.getTenantId()) {
+      return
+    }
     const data = await validForm()
     if (!data) {
       return
     }
     const loginDataLoginForm = { ...loginData.loginForm }
+    loginDataLoginForm.tenantName = defaultTenantName
     loginDataLoginForm.captchaVerification = params.captchaVerification
     const res = await LoginApi.login(loginDataLoginForm)
     if (!res) {
@@ -213,9 +216,9 @@ watch(
     immediate: true
   }
 )
-onMounted(() => {
+onMounted(async () => {
   getLoginFormCache()
-  getTenantByWebsite()
+  await getTenantId()
 })
 </script>
 
