@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 /**
  * 取消绑定社交用户 Request DTO
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Data
 @NoArgsConstructor

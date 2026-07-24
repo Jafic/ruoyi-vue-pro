@@ -121,8 +121,8 @@ export default {
     small: '小'
   },
   login: {
-    welcome: '欢迎使用本系统',
-    message: '开箱即用的中后台管理系统',
+    welcome: '欢迎使用 CCOC平台',
+    message: 'CCOC平台',
     tenantname: '租户名称',
     username: '用户名',
     password: '密码',
@@ -381,7 +381,7 @@ export default {
       qrSignInFormTitle: '二维码登录',
       signUpFormTitle: '注册',
       forgetFormTitle: '重置密码',
-      signInTitle: '开箱即用的中后台管理系统',
+      signInTitle: 'CCOC平台',
       signInDesc: '输入您的个人详细信息开始使用！',
       policy: '我同意xxx隐私政策',
       scanSign: `扫码后点击"确认"，即可完成登录`,

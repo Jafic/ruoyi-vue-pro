@@ -18,7 +18,7 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 /**
  * IoT 设备 Service 接口
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public interface IotDeviceService {
 

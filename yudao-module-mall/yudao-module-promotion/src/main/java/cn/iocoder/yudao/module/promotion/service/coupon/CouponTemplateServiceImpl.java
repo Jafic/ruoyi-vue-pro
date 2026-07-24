@@ -27,7 +27,7 @@ import static cn.iocoder.yudao.module.promotion.enums.ErrorCodeConstants.*;
 /**
  * 优惠劵模板 Service 实现类
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Service
 @Validated

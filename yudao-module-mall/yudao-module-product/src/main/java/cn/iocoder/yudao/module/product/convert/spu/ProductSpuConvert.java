@@ -19,7 +19,7 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 /**
  * 商品 SPU Convert
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface ProductSpuConvert {

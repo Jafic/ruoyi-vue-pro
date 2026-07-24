@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * AI 工具 Mapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface AiToolMapper extends BaseMapperX<AiToolDO> {

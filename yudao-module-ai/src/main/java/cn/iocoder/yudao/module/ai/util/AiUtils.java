@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * Spring AI 工具类
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public class AiUtils {
 

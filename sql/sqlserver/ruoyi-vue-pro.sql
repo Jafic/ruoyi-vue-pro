@@ -1923,7 +1923,7 @@ BEGIN TRANSACTION
 GO
 SET IDENTITY_INSERT system_dept ON
 GO
-INSERT INTO system_dept (id, name, parent_id, sort, leader_user_id, phone, email, status, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (100, N'芋道源码', 0, 0, 1, N'15888888888', N'ry@qq.com', 0, N'admin', N'2021-01-05 17:03:47', N'1', N'2025-03-29 15:47:53', N'0', 1)
+INSERT INTO system_dept (id, name, parent_id, sort, leader_user_id, phone, email, status, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (100, N'CCOC', 0, 0, 1, N'15888888888', N'ry@qq.com', 0, N'admin', N'2021-01-05 17:03:47', N'1', N'2025-03-29 15:47:53', N'0', 1)
 GO
 INSERT INTO system_dept (id, name, parent_id, sort, leader_user_id, phone, email, status, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (101, N'深圳总公司', 100, 1, 104, N'15888888888', N'ry@qq.com', 0, N'admin', N'2021-01-05 17:03:47', N'1', N'2025-03-29 15:49:55', N'0', 1)
 GO
@@ -7148,7 +7148,7 @@ BEGIN TRANSACTION
 GO
 SET IDENTITY_INSERT system_oauth2_client ON
 GO
-INSERT INTO system_oauth2_client (id, client_id, secret, name, logo, description, status, access_token_validity_seconds, refresh_token_validity_seconds, redirect_uris, authorized_grant_types, scopes, auto_approve_scopes, authorities, resource_ids, additional_information, creator, create_time, updater, update_time, deleted) VALUES (1, N'default', N'admin123', N'芋道源码', N'http://test.yudao.iocoder.cn/20250502/sort2_1746189740718.png', N'我是描述', 0, 1800, 2592000, N'["https://www.iocoder.cn","https://doc.iocoder.cn"]', N'["password","authorization_code","implicit","refresh_token"]', N'["user.read","user.write"]', N'[]', N'["user.read","user.write"]', N'[]', N'{}', N'1', N'2022-05-11 21:47:12', N'1', N'2025-05-02 20:42:22', N'0')
+INSERT INTO system_oauth2_client (id, client_id, secret, name, logo, description, status, access_token_validity_seconds, refresh_token_validity_seconds, redirect_uris, authorized_grant_types, scopes, auto_approve_scopes, authorities, resource_ids, additional_information, creator, create_time, updater, update_time, deleted) VALUES (1, N'default', N'admin123', N'CCOC', N'http://test.yudao.iocoder.cn/20250502/sort2_1746189740718.png', N'我是描述', 0, 1800, 2592000, N'["https://www.iocoder.cn","https://doc.iocoder.cn"]', N'["password","authorization_code","implicit","refresh_token"]', N'["user.read","user.write"]', N'[]', N'["user.read","user.write"]', N'[]', N'{}', N'1', N'2022-05-11 21:47:12', N'1', N'2025-05-02 20:42:22', N'0')
 GO
 INSERT INTO system_oauth2_client (id, client_id, secret, name, logo, description, status, access_token_validity_seconds, refresh_token_validity_seconds, redirect_uris, authorized_grant_types, scopes, auto_approve_scopes, authorities, resource_ids, additional_information, creator, create_time, updater, update_time, deleted) VALUES (40, N'test', N'test2', N'biubiu', N'http://test.yudao.iocoder.cn/xx/20250502/ed07110a37464b5299f8bd7c67ad65c7_1746187077009.jpg', N'啦啦啦啦', 0, 1800, 43200, N'["https://www.iocoder.cn"]', N'["password","authorization_code","implicit"]', N'["user_info","projects"]', N'["user_info"]', N'[]', N'[]', N'{}', N'1', N'2022-05-12 00:28:20', N'1', N'2025-05-02 19:58:08', N'0')
 GO
@@ -10965,7 +10965,7 @@ BEGIN TRANSACTION
 GO
 SET IDENTITY_INSERT system_tenant ON
 GO
-INSERT INTO system_tenant (id, name, contact_user_id, contact_name, contact_mobile, status, websites, package_id, expire_time, account_count, creator, create_time, updater, update_time, deleted) VALUES (1, N'芋道源码', NULL, N'芋艿', N'17321315478', 0, N'www.iocoder.cn', 0, N'2099-02-19 17:14:16', 9999, N'1', N'2021-01-05 17:03:47', N'1', N'2023-11-06 11:41:41', N'0')
+INSERT INTO system_tenant (id, name, contact_user_id, contact_name, contact_mobile, status, websites, package_id, expire_time, account_count, creator, create_time, updater, update_time, deleted) VALUES (1, N'CCOC', NULL, N'芋艿', N'17321315478', 0, N'www.iocoder.cn', 0, N'2099-02-19 17:14:16', 9999, N'1', N'2021-01-05 17:03:47', N'1', N'2023-11-06 11:41:41', N'0')
 GO
 INSERT INTO system_tenant (id, name, contact_user_id, contact_name, contact_mobile, status, websites, package_id, expire_time, account_count, creator, create_time, updater, update_time, deleted) VALUES (121, N'小租户', 110, N'小王2', N'15601691300', 0, N'zsxq.iocoder.cn', 111, N'2026-07-10 00:00:00', 30, N'1', N'2022-02-22 00:56:14', N'1', N'2025-04-03 21:33:01', N'0')
 GO
@@ -11531,7 +11531,7 @@ BEGIN TRANSACTION
 GO
 SET IDENTITY_INSERT system_users ON
 GO
-INSERT INTO system_users (id, username, password, nickname, remark, dept_id, post_ids, email, mobile, sex, avatar, status, login_ip, login_date, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (1, N'admin', N'$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', N'芋道源码', N'管理员', 103, N'[1,2]', N'11aoteman@126.com', N'18818260277', 2, N'http://test.yudao.iocoder.cn/test/20250502/avatar_1746154660449.png', 0, N'0:0:0:0:0:0:0:1', N'2025-05-10 18:03:15', N'admin', N'2021-01-05 17:03:47', NULL, N'2025-05-10 18:03:15', N'0', 1)
+INSERT INTO system_users (id, username, password, nickname, remark, dept_id, post_ids, email, mobile, sex, avatar, status, login_ip, login_date, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (1, N'admin', N'$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', N'CCOC', N'管理员', 103, N'[1,2]', N'11aoteman@126.com', N'18818260277', 2, N'http://test.yudao.iocoder.cn/test/20250502/avatar_1746154660449.png', 0, N'0:0:0:0:0:0:0:1', N'2025-05-10 18:03:15', N'admin', N'2021-01-05 17:03:47', NULL, N'2025-05-10 18:03:15', N'0', 1)
 GO
 INSERT INTO system_users (id, username, password, nickname, remark, dept_id, post_ids, email, mobile, sex, avatar, status, login_ip, login_date, creator, create_time, updater, update_time, deleted, tenant_id) VALUES (100, N'yudao', N'$2a$04$h.aaPKgO.odHepnk5PCsWeEwKdojFWdTItxGKfx1r0e1CSeBzsTJ6', N'芋道', N'不要吓我', 104, N'[1]', N'yudao@iocoder.cn', N'15601691300', 1, NULL, 0, N'0:0:0:0:0:0:0:1', N'2025-04-08 09:36:40', N'', N'2021-01-07 09:07:17', NULL, N'2025-04-21 14:23:08', N'0', 1)
 GO

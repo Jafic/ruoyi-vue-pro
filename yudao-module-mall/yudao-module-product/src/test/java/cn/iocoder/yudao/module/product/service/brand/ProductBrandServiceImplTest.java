@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
 * {@link ProductBrandServiceImpl} 的单元测试类
 *
-* @author 芋道源码
+* @author CCOC
 */
 @Disabled // TODO 芋艿：后续 fix 补充的单测
 @Import(ProductBrandServiceImpl.class)
@@ -107,7 +107,7 @@ public class ProductBrandServiceImplTest extends BaseDbUnitTest {
     public void testGetBrandPage() {
        // mock 数据
        ProductBrandDO dbBrand = randomPojo(ProductBrandDO.class, o -> { // 等会查询到
-           o.setName("芋道源码");
+           o.setName("CCOC");
            o.setStatus(CommonStatusEnum.ENABLE.getStatus());
            o.setCreateTime(buildTime(2022, 2, 1));
        });

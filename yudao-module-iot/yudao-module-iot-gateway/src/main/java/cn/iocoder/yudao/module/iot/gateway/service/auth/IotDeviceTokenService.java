@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.iot.core.util.IotDeviceAuthUtils;
 /**
  * IoT 设备 Token Service 接口
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public interface IotDeviceTokenService {
 

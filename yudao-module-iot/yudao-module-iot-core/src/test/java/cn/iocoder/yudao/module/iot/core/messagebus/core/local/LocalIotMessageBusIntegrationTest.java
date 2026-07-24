@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * {@link IotLocalMessageBus} 集成测试
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @SpringBootTest(classes = LocalIotMessageBusIntegrationTest.class)
 @Import(IotMessageBusAutoConfiguration.class)

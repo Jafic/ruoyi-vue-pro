@@ -216,7 +216,7 @@ watch(
 )
 
 /**
- * 浏览器标签 title 拼上未读数前缀；例：(63条未读)芋道源码
+ * 浏览器标签 title 拼上未读数前缀；例：(63条未读)CCOC
  *
  * 路由切换时 router.afterEach 会调 useTitle 重置 title；用 nextTick 排在它之后再覆盖
  * 一并监听 route.fullPath，IM 子路由切换（消息 / 通讯录）也能重新加上前缀

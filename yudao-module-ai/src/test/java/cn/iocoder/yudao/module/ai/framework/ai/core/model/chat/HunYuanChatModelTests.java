@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * {@link HunYuanChatModel} 集成测试
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public class HunYuanChatModelTests {
 

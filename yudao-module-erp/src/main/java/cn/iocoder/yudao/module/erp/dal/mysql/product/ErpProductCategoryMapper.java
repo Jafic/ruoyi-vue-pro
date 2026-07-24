@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * ERP 产品分类 Mapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface ErpProductCategoryMapper extends BaseMapperX<ErpProductCategoryDO> {

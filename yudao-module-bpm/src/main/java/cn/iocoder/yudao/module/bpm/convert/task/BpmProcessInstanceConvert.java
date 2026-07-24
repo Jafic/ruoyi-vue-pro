@@ -49,7 +49,7 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 /**
  * 流程实例 Convert
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface BpmProcessInstanceConvert {

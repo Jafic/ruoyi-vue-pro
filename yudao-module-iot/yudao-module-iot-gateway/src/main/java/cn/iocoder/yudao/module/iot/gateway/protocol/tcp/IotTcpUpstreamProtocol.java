@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * IoT 网关 TCP 协议：接收设备上行消息
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Slf4j
 public class IotTcpUpstreamProtocol {

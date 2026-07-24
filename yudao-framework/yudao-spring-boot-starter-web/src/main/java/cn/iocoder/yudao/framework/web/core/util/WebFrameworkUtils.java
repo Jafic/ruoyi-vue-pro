@@ -14,7 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 /**
  * 专属于 web 包的工具类
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public class WebFrameworkUtils {
 

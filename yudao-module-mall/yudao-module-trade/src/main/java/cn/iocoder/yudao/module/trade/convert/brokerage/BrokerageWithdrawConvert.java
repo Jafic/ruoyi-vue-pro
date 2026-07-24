@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * 佣金提现 Convert
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface BrokerageWithdrawConvert {

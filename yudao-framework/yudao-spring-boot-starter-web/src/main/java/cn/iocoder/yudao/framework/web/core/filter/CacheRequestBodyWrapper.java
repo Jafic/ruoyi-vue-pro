@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 /**
  *  Request Body 缓存 Wrapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public class CacheRequestBodyWrapper extends HttpServletRequestWrapper {
 

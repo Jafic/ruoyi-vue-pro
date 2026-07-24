@@ -12,7 +12,7 @@ import cn.iocoder.yudao.module.infra.controller.admin.demo.vo.*;
 /**
  * 分类 Mapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface InfraCategoryMapper extends BaseMapperX<InfraCategoryDO> {

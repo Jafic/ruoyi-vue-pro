@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * IoT 设备分组 Mapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface IotDeviceGroupMapper extends BaseMapperX<IotDeviceGroupDO> {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 /**
  * 设备关联的网关 serverId 的 Redis DAO
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Repository
 public class DeviceServerIdRedisDAO {

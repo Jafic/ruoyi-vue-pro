@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
  * <p>
  * 用于统一管理 MQTT 协议中的主题常量，基于 Alink 协议规范
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public final class IotMqttTopicUtils {
 

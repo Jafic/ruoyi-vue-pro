@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * IoT 设备属性设置的 {@link IotSceneRuleAction} 实现类
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Component
 @Slf4j

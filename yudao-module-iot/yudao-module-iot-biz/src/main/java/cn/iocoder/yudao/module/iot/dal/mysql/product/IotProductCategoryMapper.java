@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * IoT 产品分类 Mapper
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface IotProductCategoryMapper extends BaseMapperX<IotProductCategoryDO> {

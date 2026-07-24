@@ -24,7 +24,7 @@ import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.
 /**
  * 砍价记录 Convert
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Mapper
 public interface BargainRecordConvert {

@@ -5,7 +5,7 @@ import cn.iocoder.yudao.module.iot.core.mq.message.IotDeviceMessage;
 /**
  * {@link cn.iocoder.yudao.module.iot.core.mq.message.IotDeviceMessage} 的编解码器
  *
- * @author 芋道源码
+ * @author CCOC
  */
 public interface IotDeviceMessageCodec {
 

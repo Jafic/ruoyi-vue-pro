@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 拼团记录 Response DTO
  *
- * @author 芋道源码
+ * @author CCOC
  */
 @Data
 public class CombinationRecordRespDTO {
