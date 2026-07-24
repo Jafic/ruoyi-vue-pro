@@ -45,6 +45,8 @@
         <spring.boot.version>3.5.5</spring.boot.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 跳过 test 编译与执行（对齐 copweb：mvn ... -Dmaven.test.skip=true） -->
+        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <dependencyManagement>
