@@ -44,7 +44,7 @@
           <el-tab-pane label="审批详情" name="form">
             <div class="form-scroll-area">
               <el-scrollbar>
-                <el-row>
+                <el-row :gutter="40">
                   <el-col :span="17" class="!flex !flex-col formCol">
                     <!-- 表单信息 -->
                     <div
@@ -52,14 +52,14 @@
                       class="form-box flex flex-col mb-30px flex-1"
                     >
                       <!-- 情况一：流程表单 -->
-                      <el-col v-if="processDefinition?.formType === BpmModelFormType.NORMAL">
+                      <div v-if="processDefinition?.formType === BpmModelFormType.NORMAL">
                         <form-create
                           v-model="detailForm.value"
                           v-model:api="fApi"
                           :option="detailForm.option"
                           :rule="detailForm.rule"
                         />
-                      </el-col>
+                      </div>
                       <!-- 情况二：业务表单 -->
                       <div v-if="processDefinition?.formType === BpmModelFormType.CUSTOM">
                         <BusinessFormComponent :id="processInstance.businessKey" />
@@ -138,7 +138,7 @@ import { DICT_TYPE } from '@/utils/dict'
 import { BpmModelType, BpmModelFormType } from '@/utils/constants'
 import { setConfAndFields2 } from '@/utils/formCreate'
 import { registerComponent } from '@/utils/routerHelper'
-import type { ApiAttrs } from '@form-create/element-ui/types/config'
+import type { Api as FormCreateApi } from '@form-create/element-ui'
 import * as ProcessInstanceApi from '@/api/bpm/processInstance'
 import * as UserApi from '@/api/system/user'
 import ProcessInstanceBpmnViewer from './ProcessInstanceBpmnViewer.vue'
@@ -174,7 +174,7 @@ const auditIconsMap = {
 }
 
 // ========== 申请信息 ==========
-const fApi = ref<ApiAttrs>() //
+const fApi = ref<FormCreateApi>() //
 const detailForm = ref({
   rule: [],
   option: {},
@@ -235,7 +235,6 @@ const getApprovalDetail = async () => {
       nextTick().then(() => {
         fApi.value?.btn.show(false)
         fApi.value?.resetBtn.show(false)
-        //@ts-ignore
         fApi.value?.disabled(true)
         // 设置表单字段权限
         if (formFieldsPermission) {
@@ -276,17 +275,14 @@ const getProcessModelView = async () => {
 /** 设置表单权限 */
 const setFieldPermission = (field: string, permission: string) => {
   if (permission === FieldPermissionType.READ) {
-    //@ts-ignore
     fApi.value?.disabled(true, field)
   }
   if (permission === FieldPermissionType.WRITE) {
-    //@ts-ignore
     fApi.value?.disabled(false, field)
     // 加入可以编辑的字段
     writableFields.push(field)
   }
   if (permission === FieldPermissionType.NONE) {
-    //@ts-ignore
     fApi.value?.hidden(true, field)
   }
 }

@@ -141,6 +141,7 @@
 <script setup lang="ts">
 import { useVModel } from '@vueuse/core'
 import { InfoFilled } from '@element-plus/icons-vue'
+import { isEmptyVal } from '@/utils/is'
 import {
   IoTDataSpecsDataTypeEnum,
   JSON_PARAMS_INPUT_CONSTANTS,
@@ -294,22 +295,6 @@ const emptyMessage = computed(() => {
   }
 })
 
-// 计算属性：无配置消息
-const noConfigMessage = computed(() => {
-  switch (props.type) {
-    case JsonParamsInputTypeEnum.SERVICE:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.SERVICE
-    case JsonParamsInputTypeEnum.EVENT:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.EVENT
-    case JsonParamsInputTypeEnum.PROPERTY:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.PROPERTY
-    case JsonParamsInputTypeEnum.CUSTOM:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.CUSTOM
-    default:
-      return JSON_PARAMS_INPUT_CONSTANTS.NO_CONFIG_MESSAGES.DEFAULT
-  }
-})
-
 /**
  * 处理参数变化事件
  */
@@ -329,7 +314,8 @@ const handleParamsChange = () => {
 
       // 验证必填参数
       for (const param of paramsList.value) {
-        if (param.required && (!parsed[param.identifier] || parsed[param.identifier] === '')) {
+        const value = parsed[param.identifier]
+        if (param.required && isEmptyVal(value)) {
           jsonError.value = JSON_PARAMS_INPUT_CONSTANTS.PARAM_REQUIRED_ERROR(param.name)
           return
         }

@@ -5,6 +5,19 @@ export const IOT_PROVIDE_KEY = {
   PRODUCT: 'IOT_PRODUCT'
 }
 
+/** IoT 设备状态枚举 */
+export enum DeviceStateEnum {
+  INACTIVE = 0, // 未激活
+  ONLINE = 1, // 在线
+  OFFLINE = 2 // 离线
+}
+
+/** IoT 产品状态枚举 */
+export enum ProductStatusEnum {
+  UNPUBLISHED = 0, // 未发布
+  PUBLISHED = 1 // 已发布
+}
+
 /** IoT 产品物模型类型枚举类 */
 export const IoTThingModelTypeEnum = {
   PROPERTY: 1, // 属性
@@ -12,12 +25,53 @@ export const IoTThingModelTypeEnum = {
   EVENT: 3 // 事件
 } as const
 
+/** IoT 告警接收方式枚举，与后端 IotAlertReceiveTypeEnum 保持一致 */
+export const IotAlertReceiveTypeEnum = {
+  SMS: 1, // 短信
+  MAIL: 2, // 邮箱
+  NOTIFY: 3 // 站内信
+} as const
+
 /** IoT 设备消息的方法枚举 */
 export const IotDeviceMessageMethodEnum = {
   // ========== 设备状态 ==========
   STATE_UPDATE: {
     method: 'thing.state.update',
-    name: '设备状态变更',
+    name: '设备状态更新',
+    upstream: true
+  },
+
+  // ========== 拓扑管理 ==========
+  TOPO_ADD: {
+    method: 'thing.topo.add',
+    name: '添加拓扑关系',
+    upstream: true
+  },
+  TOPO_DELETE: {
+    method: 'thing.topo.delete',
+    name: '删除拓扑关系',
+    upstream: true
+  },
+  TOPO_GET: {
+    method: 'thing.topo.get',
+    name: '获取拓扑关系',
+    upstream: true
+  },
+  TOPO_CHANGE: {
+    method: 'thing.topo.change',
+    name: '拓扑关系变更通知',
+    upstream: false
+  },
+
+  // ========== 设备注册 ==========
+  DEVICE_REGISTER: {
+    method: 'thing.auth.register',
+    name: '设备动态注册',
+    upstream: true
+  },
+  SUB_DEVICE_REGISTER: {
+    method: 'thing.auth.register.sub',
+    name: '子设备动态注册',
     upstream: true
   },
 
@@ -31,6 +85,11 @@ export const IotDeviceMessageMethodEnum = {
     method: 'thing.property.set',
     name: '属性设置',
     upstream: false
+  },
+  PROPERTY_PACK_POST: {
+    method: 'thing.event.property.pack.post',
+    name: '批量上报（属性 + 事件 + 子设备）',
+    upstream: true
   },
 
   // ========== 设备事件 ==========
@@ -52,6 +111,18 @@ export const IotDeviceMessageMethodEnum = {
     method: 'thing.config.push',
     name: '配置推送',
     upstream: false
+  },
+
+  // ========== OTA 固件 ==========
+  OTA_UPGRADE: {
+    method: 'thing.ota.upgrade',
+    name: 'OTA 固件信息推送',
+    upstream: false
+  },
+  OTA_PROGRESS: {
+    method: 'thing.ota.progress',
+    name: 'OTA 升级进度上报',
+    upstream: true
   }
 }
 
@@ -374,12 +445,12 @@ export const IoTDeviceStatusEnum = {
   // 在线状态
   ONLINE: {
     label: '在线',
-    value: 'online',
+    value: '1',
     tagType: 'success'
   },
   OFFLINE: {
     label: '离线',
-    value: 'offline',
+    value: '2',
     tagType: 'danger'
   },
   // 启用状态
@@ -541,3 +612,83 @@ export const JSON_PARAMS_EXAMPLE_VALUES = {
   [IoTDataSpecsDataTypeEnum.ARRAY]: { display: '[]', value: [] },
   DEFAULT: { display: '""', value: '' }
 } as const
+
+// ========== Modbus 通用常量 ==========
+
+/** Modbus 模式枚举 */
+export const ModbusModeEnum = {
+  POLLING: 1, // 云端轮询
+  ACTIVE_REPORT: 2 // 主动上报
+} as const
+
+/** Modbus 帧格式枚举 */
+export const ModbusFrameFormatEnum = {
+  MODBUS_TCP: 1, // Modbus TCP
+  MODBUS_RTU: 2 // Modbus RTU
+} as const
+
+/** Modbus 功能码枚举 */
+export const ModbusFunctionCodeEnum = {
+  READ_COILS: 1, // 读线圈
+  READ_DISCRETE_INPUTS: 2, // 读离散输入
+  READ_HOLDING_REGISTERS: 3, // 读保持寄存器
+  READ_INPUT_REGISTERS: 4 // 读输入寄存器
+} as const
+
+/** Modbus 功能码选项 */
+export const ModbusFunctionCodeOptions = [
+  { value: 1, label: '01 - 读线圈 (Coils)', description: '可读写布尔值' },
+  { value: 2, label: '02 - 读离散输入 (Discrete Inputs)', description: '只读布尔值' },
+  { value: 3, label: '03 - 读保持寄存器 (Holding Registers)', description: '可读写 16 位数据' },
+  { value: 4, label: '04 - 读输入寄存器 (Input Registers)', description: '只读 16 位数据' }
+]
+
+/** Modbus 原始数据类型枚举 */
+export const ModbusRawDataTypeEnum = {
+  INT16: 'INT16',
+  UINT16: 'UINT16',
+  INT32: 'INT32',
+  UINT32: 'UINT32',
+  FLOAT: 'FLOAT',
+  DOUBLE: 'DOUBLE',
+  BOOLEAN: 'BOOLEAN',
+  STRING: 'STRING'
+} as const
+
+/** Modbus 原始数据类型选项 */
+export const ModbusRawDataTypeOptions = [
+  { value: 'INT16', label: 'INT16', description: '有符号16位整数', registerCount: 1 },
+  { value: 'UINT16', label: 'UINT16', description: '无符号16位整数', registerCount: 1 },
+  { value: 'INT32', label: 'INT32', description: '有符号32位整数', registerCount: 2 },
+  { value: 'UINT32', label: 'UINT32', description: '无符号32位整数', registerCount: 2 },
+  { value: 'FLOAT', label: 'FLOAT', description: '32位浮点数', registerCount: 2 },
+  { value: 'DOUBLE', label: 'DOUBLE', description: '64位浮点数', registerCount: 4 },
+  { value: 'BOOLEAN', label: 'BOOLEAN', description: '布尔值', registerCount: 1 },
+  { value: 'STRING', label: 'STRING', description: '字符串', registerCount: 0 }
+]
+
+/** Modbus 字节序选项 - 16位 */
+export const ModbusByteOrder16Options = [
+  { value: 'AB', label: 'AB', description: '大端序' },
+  { value: 'BA', label: 'BA', description: '小端序' }
+]
+
+/** Modbus 字节序选项 - 32位 */
+export const ModbusByteOrder32Options = [
+  { value: 'ABCD', label: 'ABCD', description: '大端序' },
+  { value: 'CDAB', label: 'CDAB', description: '大端字交换' },
+  { value: 'DCBA', label: 'DCBA', description: '小端序' },
+  { value: 'BADC', label: 'BADC', description: '小端字交换' }
+]
+
+/** 根据数据类型获取字节序选项 */
+export const getByteOrderOptions = (rawDataType: string) => {
+  if (['INT32', 'UINT32', 'FLOAT'].includes(rawDataType)) {
+    return ModbusByteOrder32Options
+  }
+  if (rawDataType === 'DOUBLE') {
+    // 64 位暂时复用 32 位字节序
+    return ModbusByteOrder32Options
+  }
+  return ModbusByteOrder16Options
+}

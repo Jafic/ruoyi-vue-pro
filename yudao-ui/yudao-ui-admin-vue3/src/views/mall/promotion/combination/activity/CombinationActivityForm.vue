@@ -104,7 +104,7 @@ const getSpuDetails = async (
     if (typeof products !== 'undefined') {
       const product = products.find((item) => item.skuId === sku.id)
       if (product) {
-        product.combinationPrice = formatToFraction(product.combinationPrice)
+        product.combinationPrice = Number(formatToFraction(product.combinationPrice))
       }
       config = product || config
     }
@@ -135,7 +135,11 @@ const open = async (type: string, id?: number) => {
       const data = (await CombinationActivityApi.getCombinationActivity(
         id
       )) as CombinationActivityApi.CombinationActivityVO
-      await getSpuDetails(data.spuId!, data.products?.map((sku) => sku.skuId), data.products)
+      await getSpuDetails(
+        data.spuId!,
+        data.products?.map((sku) => sku.skuId),
+        data.products
+      )
       formRef.value.setValues(data)
     } finally {
       formLoading.value = false

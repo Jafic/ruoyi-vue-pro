@@ -78,7 +78,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     // 删除某个
     delView(view: RouteLocationNormalizedLoaded) {
       this.delVisitedView(view)
-      this.delCachedView()
+      this.addCachedView()
     },
     // 删除tag
     delVisitedView(view: RouteLocationNormalizedLoaded) {
@@ -93,11 +93,12 @@ export const useTagsViewStore = defineStore('tagsView', {
     delCachedView() {
       const route = router.currentRoute.value
       const index = findIndex<string>(this.getCachedViews, (v) => v === route.name)
-      for (const v of this.visitedViews) {
-        if (v.name === route.name) {
-          return
-        }
-      }
+      // 需要注释，解决“标签页刷新无效”。相关案例：https://github.com/yudaocode/yudao-ui-admin-vue3/issues/180
+      // for (const v of this.visitedViews) {
+      //   if (v.name === route.name) {
+      //     return
+      //   }
+      // }
       if (index > -1) {
         this.cachedViews.delete(this.getCachedViews[index])
       }
@@ -105,7 +106,7 @@ export const useTagsViewStore = defineStore('tagsView', {
     // 删除所有缓存和tag
     delAllViews() {
       this.delAllVisitedViews()
-      this.delCachedView()
+      this.addCachedView()
     },
     // 删除所有tag
     delAllVisitedViews() {

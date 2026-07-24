@@ -64,18 +64,18 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formData = ref<Demo03Student>({
   id: undefined,
   name: undefined,
   sex: undefined,
   birthday: undefined,
-  description: undefined,
+  description: undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '名字不能为空', trigger: 'blur' }],
   sex: [{ required: true, message: '性别不能为空', trigger: 'blur' }],
   birthday: [{ required: true, message: '出生日期不能为空', trigger: 'blur' }],
-  description: [{ required: true, message: '简介不能为空', trigger: 'blur' }],
+  description: [{ required: true, message: '简介不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
@@ -123,10 +123,10 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as Demo03Student
+    const data = formData.value
     // 拼接子表的数据
-    data.demo03Courses = demo03CourseFormRef.value.getData()
-    data.demo03Grade = demo03GradeFormRef.value.getData()
+    data.demo03courses = demo03CourseFormRef.value.getData()
+    data.demo03grade = demo03GradeFormRef.value.getData()
     if (formType.value === 'create') {
       await Demo03StudentApi.createDemo03Student(data)
       message.success(t('common.createSuccess'))
@@ -149,7 +149,7 @@ const resetForm = () => {
     name: undefined,
     sex: undefined,
     birthday: undefined,
-    description: undefined,
+    description: undefined
   }
   formRef.value?.resetFields()
 }

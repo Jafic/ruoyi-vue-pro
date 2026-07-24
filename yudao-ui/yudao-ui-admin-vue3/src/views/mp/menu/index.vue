@@ -27,12 +27,17 @@
           />
         </div>
         <div class="save_div">
-          <el-button class="save_btn" type="success" @click="onSave" v-hasPermi="['mp:menu:save']"
-            >保存并发布菜单</el-button
+          <el-button class="save_btn" type="success" @click="onSave" v-hasPermi="['mp:menu:save']">
+            保存并发布菜单
+          </el-button>
+          <el-button
+            class="save_btn"
+            type="danger"
+            @click="onClear"
+            v-hasPermi="['mp:menu:delete']"
           >
-          <el-button class="save_btn" type="danger" @click="onClear" v-hasPermi="['mp:menu:delete']"
-            >清空菜单</el-button
-          >
+            清空菜单
+          </el-button>
         </div>
       </div>
       <!--右边配置-->
@@ -217,7 +222,9 @@ const onDeleteMenu = async () => {
     activeMenu.value = {}
     showRightPanel.value = false
     activeIndex.value = MENU_NOT_SELECTED
-  } catch {}
+  } catch {
+    //
+  }
 }
 
 // ======================== 菜单编辑 ========================
@@ -267,7 +274,7 @@ const menuListToBackend = () => {
 // 将前端的 menu，转换成后端接收的 menu
 // TODO: @芋艿，需要根据后台API删除不需要的字段
 const menuToBackend = (menu: any) => {
-  let result = {
+  const result = {
     ...menu,
     children: undefined, // 不处理子节点
     reply: undefined // 稍后复制

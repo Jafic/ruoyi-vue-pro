@@ -414,7 +414,7 @@
             <div>
               <el-divider content-position="left">跳过表达式</el-divider>
               <el-form-item prop="skipExpression">
-                <el-input v-model="configForm.skipExpression" type="textarea"  />
+                <el-input v-model="configForm.skipExpression" type="textarea" />
               </el-form-item>
             </div>
           </el-form>
@@ -444,9 +444,9 @@
                 :placeholder="item.displayName"
                 v-if="btnDisplayNameEdit[index]"
               />
-              <el-button v-else text @click="changeBtnDisplayName(index)"
-                >{{ item.displayName }} &nbsp;<Icon icon="ep:edit"
-              /></el-button>
+              <el-button v-else text @click="changeBtnDisplayName(index)">
+                {{ item.displayName }} &nbsp;<Icon icon="ep:edit" />
+              </el-button>
             </div>
             <div class="button-setting-item-label">
               <el-switch v-model="item.enable" />
@@ -483,24 +483,27 @@
                   :value="FieldPermissionType.READ"
                   size="large"
                   :label="FieldPermissionType.READ"
-                  ><span></span
-                ></el-radio>
+                >
+                  <span></span>
+                </el-radio>
               </div>
               <div class="item-radio-wrap">
                 <el-radio
                   :value="FieldPermissionType.WRITE"
                   size="large"
                   :label="FieldPermissionType.WRITE"
-                  ><span></span
-                ></el-radio>
+                >
+                  <span></span>
+                </el-radio>
               </div>
               <div class="item-radio-wrap">
                 <el-radio
                   :value="FieldPermissionType.NONE"
                   size="large"
                   :label="FieldPermissionType.NONE"
-                  ><span></span
-                ></el-radio>
+                >
+                  <span></span>
+                </el-radio>
               </div>
             </el-radio-group>
           </div>
@@ -813,7 +816,7 @@ const showUserTaskNodeConfig = (node: SimpleFlowNode) => {
   configForm.value.timeoutHandlerEnable = node.timeoutHandler?.enable
   if (node.timeoutHandler?.enable && node.timeoutHandler?.timeDuration) {
     const strTimeDuration = node.timeoutHandler.timeDuration
-    let parseTime = strTimeDuration.slice(2, strTimeDuration.length - 1)
+    let parseTime = strTimeDuration.match(/\d+/)?.[0] ?? ''
     let parseTimeUnit = strTimeDuration.slice(strTimeDuration.length - 1)
     configForm.value.timeDuration = parseInt(parseTime)
     timeUnit.value = convertTimeUnit(parseTimeUnit)
@@ -935,12 +938,12 @@ function useTimeoutHandler() {
     if (!configForm.value.timeoutHandlerEnable) {
       return undefined
     }
-    let strTimeDuration = 'PT'
+    let strTimeDuration = 'P'
     if (timeUnit.value === TimeUnitType.MINUTE) {
-      strTimeDuration += configForm.value.timeDuration + 'M'
+      strTimeDuration += 'T' + configForm.value.timeDuration + 'M'
     }
     if (timeUnit.value === TimeUnitType.HOUR) {
-      strTimeDuration += configForm.value.timeDuration + 'H'
+      strTimeDuration += 'T' + configForm.value.timeDuration + 'H'
     }
     if (timeUnit.value === TimeUnitType.DAY) {
       strTimeDuration += configForm.value.timeDuration + 'D'

@@ -28,6 +28,10 @@ export interface StringDictDataType extends DictDataType {
   value: string
 }
 
+export interface BooleanDictDataType extends DictDataType {
+  value: boolean
+}
+
 export const getDictOptions = (dictType: string) => {
   return dictStore.getDictByType(dictType) || []
 }
@@ -62,8 +66,8 @@ export const getStrDictOptions = (dictType: string) => {
   return dictOption
 }
 
-export const getBoolDictOptions = (dictType: string) => {
-  const dictOption: DictDataType[] = []
+export const getBoolDictOptions = (dictType: string): BooleanDictDataType[] => {
+  const dictOption: BooleanDictDataType[] = []
   const dictOptions: DictDataType[] = getDictOptions(dictType)
   dictOptions.forEach((dict: DictDataType) => {
     dictOption.push({
@@ -158,6 +162,7 @@ export enum DICT_TYPE {
   PAY_REFUND_STATUS = 'pay_refund_status', // 退款订单状态
   PAY_NOTIFY_STATUS = 'pay_notify_status', // 商户支付回调状态
   PAY_NOTIFY_TYPE = 'pay_notify_type', // 商户支付回调状态
+  PAY_TRANSFER_TYPE = 'pay_transfer_type', // 转账订单类型
   PAY_TRANSFER_STATUS = 'pay_transfer_status', // 转账订单状态
 
   // ========== MP 模块 ==========
@@ -216,6 +221,13 @@ export enum DICT_TYPE {
   ERP_AUDIT_STATUS = 'erp_audit_status', // ERP 审批状态
   ERP_STOCK_RECORD_BIZ_TYPE = 'erp_stock_record_biz_type', // 库存明细的业务类型
 
+  // ========== WMS - 仓库管理模块 ==========
+  WMS_MERCHANT_TYPE = 'merchant_type', // WMS 往来企业类型
+  WMS_ORDER_TYPE = 'wms_order_type', // WMS 单据类型
+  WMS_ORDER_STATUS = 'wms_order_status', // WMS 单据状态
+  WMS_RECEIPT_ORDER_TYPE = 'wms_receipt_order_type', // WMS 入库单类型
+  WMS_SHIPMENT_ORDER_TYPE = 'wms_shipment_order_type', // WMS 出库单类型
+
   // ========== AI - 人工智能模块  ==========
   AI_PLATFORM = 'ai_platform', // AI 平台
   AI_MODEL_TYPE = 'ai_model_type', // AI 模型类型
@@ -233,7 +245,8 @@ export enum DICT_TYPE {
   IOT_NET_TYPE = 'iot_net_type', // IOT 联网方式
   IOT_PRODUCT_STATUS = 'iot_product_status', // IOT 产品状态
   IOT_PRODUCT_DEVICE_TYPE = 'iot_product_device_type', // IOT 产品设备类型
-  IOT_CODEC_TYPE = 'iot_codec_type', // IOT 数据格式（编解码器类型）
+  IOT_PROTOCOL_TYPE = 'iot_protocol_type', // IOT 协议类型
+  IOT_SERIALIZE_TYPE = 'iot_serialize_type', // IOT 序列化类型
   IOT_LOCATION_TYPE = 'iot_location_type', // IOT 定位类型
   IOT_DEVICE_STATE = 'iot_device_state', // IOT 设备状态
   IOT_THING_MODEL_TYPE = 'iot_thing_model_type', // IOT 产品功能类型
@@ -247,5 +260,100 @@ export enum DICT_TYPE {
   IOT_ALERT_RECEIVE_TYPE = 'iot_alert_receive_type', // IoT 告警接收类型
   IOT_OTA_TASK_DEVICE_SCOPE = 'iot_ota_task_device_scope', // IoT OTA任务设备范围
   IOT_OTA_TASK_STATUS = 'iot_ota_task_status', // IoT OTA 任务状态
-  IOT_OTA_TASK_RECORD_STATUS = 'iot_ota_task_record_status' // IoT OTA 记录状态
+  IOT_OTA_TASK_RECORD_STATUS = 'iot_ota_task_record_status', // IoT OTA 记录状态
+  IOT_MODBUS_MODE = 'iot_modbus_mode', // IoT Modbus 工作模式
+  IOT_MODBUS_FRAME_FORMAT = 'iot_modbus_frame_format', // IoT Modbus 帧格式
+
+  // ========== MES - 制造执行系统模块  ==========
+  MES_MD_ITEM_OR_PRODUCT = 'mes_md_item_or_product', // MES 物料产品标识
+  MES_CLIENT_TYPE = 'mes_client_type', // MES 客户类型
+  MES_VENDOR_LEVEL = 'mes_vendor_level', // MES 供应商级别
+  MES_CAL_HOLIDAY_TYPE = 'mes_cal_holiday_type', // MES 假期类型
+  MES_CAL_SHIFT_TYPE = 'mes_cal_shift_type', // MES 轮班方式
+  MES_CAL_SHIFT_METHOD = 'mes_cal_shift_method', // MES 倒班方式
+  MES_CAL_CALENDAR_TYPE = 'mes_cal_calendar_type', // MES 班组类型
+  MES_CAL_PLAN_STATUS = 'mes_cal_plan_status', // MES 排班计划状态
+  MES_TM_TOOL_STATUS = 'mes_tm_tool_status', // MES 工具状态
+  MES_TM_MAINTEN_TYPE = 'mes_tm_mainten_type', // MES 保养维护类型
+  MES_DV_MACHINERY_STATUS = 'mes_dv_machinery_status', // MES 设备状态
+  MES_DV_SUBJECT_TYPE = 'mes_dv_subject_type', // MES 点检保养项目类型
+  MES_INDICATOR_TYPE = 'mes_indicator_type', // MES 检测项类型
+  MES_QC_RESULT_TYPE = 'mes_qc_result_type', // MES 质检结果值类型
+  MES_DEFECT_LEVEL = 'mes_defect_level', // MES 缺陷等级
+  MES_PRO_WORK_ORDER_STATUS = 'mes_pro_work_order_status', // MES 生产工单状态
+  MES_PRO_WORK_ORDER_SOURCE_TYPE = 'mes_pro_work_order_source_type', // MES 工单来源类型
+  MES_PRO_WORK_ORDER_TYPE = 'mes_pro_work_order_type', // MES 工单类型
+  MES_QC_TYPE = 'mes_qc_type', // MES 质检方案类型
+  MES_PRO_LINK_TYPE = 'mes_pro_link_type', // MES 工序关系类型
+  MES_PRO_TASK_STATUS = 'mes_pro_task_status', // MES 生产任务状态
+  MES_TIME_UNIT_TYPE = 'mes_time_unit_type', // MES 时间单位
+  MES_ORDER_STATUS = 'mes_order_status', // MES 单据状态
+  MES_QC_CHECK_RESULT = 'mes_qc_check_result', // MES 检测结果
+  MES_QC_SOURCE_DOC_TYPE = 'mes_qc_source_doc_type', // MES 来源单据类型
+  MES_IPQC_TYPE = 'mes_ipqc_type', // MES IPQC 检验类型
+  MES_DV_CYCLE_TYPE = 'mes_dv_cycle_type', // MES 点检保养周期类型
+  MES_DV_CHECK_PLAN_STATUS = 'mes_dv_check_plan_status', // MES 点检保养方案状态
+  MES_MAINTEN_RECORD_STATUS = 'mes_mainten_record_status', // MES 保养记录状态
+  MES_MAINTEN_STATUS = 'mes_mainten_status', // MES 保养结果
+  MES_DV_REPAIR_STATUS = 'mes_dv_repair_status', // MES 维修工单状态
+  MES_DV_REPAIR_RESULT = 'mes_dv_repair_result', // MES 维修结果
+  MES_DV_CHECK_RECORD_STATUS = 'mes_dv_check_record_status', // MES 点检记录状态
+  MES_DV_CHECK_RESULT = 'mes_dv_check_result', // MES 点检结果
+  MES_PRO_FEEDBACK_STATUS = 'mes_pro_feedback_status', // MES 生产报工状态
+  MES_PRO_FEEDBACK_TYPE = 'mes_pro_feedback_type', // MES 生产报工类型
+  MES_PRO_FEEDBACK_CHANNEL = 'mes_pro_feedback_channel', // MES 生产报工途径
+  MES_PRO_ANDON_STATUS = 'mes_pro_andon_status', // MES 安灯处置状态
+  MES_PRO_ANDON_LEVEL = 'mes_pro_andon_level', // MES 安灯级别
+  MES_PRO_WORK_RECORD_TYPE = 'mes_pro_work_record_type', // MES 上下工状态类型
+  MES_RQC_TYPE = 'mes_rqc_type', // MES 退货检验类型
+  MES_WM_ARRIVAL_NOTICE_STATUS = 'mes_wm_arrival_notice_status', // MES 到货通知单状态
+  MES_WM_ITEM_RECEIPT_STATUS = 'mes_wm_item_receipt_status', // MES 物料接收单状态
+  MES_WM_TRANSFER_STATUS = 'mes_wm_transfer_status', // MES 转移单状态
+  MES_WM_TRANSFER_TYPE = 'mes_wm_transfer_type', // MES 转移单类型
+  MES_WM_STOCK_TAKING_TYPE = 'mes_wm_stock_taking_type', // MES 盘点类型
+  MES_WM_STOCK_TAKING_TASK_STATUS = 'mes_wm_stock_taking_task_status', // MES 盘点任务状态
+  MES_WM_STOCK_TAKING_LINE_STATUS = 'mes_wm_stock_taking_task_line_status', // MES 盘点任务行状态
+  MES_WM_STOCK_TAKING_PLAN_PARAM_TYPE = 'mes_wm_stock_taking_plan_param_type', // MES 盘点方案参数类型
+  MES_WM_OUTSOURCE_RECPT_STATUS = 'mes_wm_outsource_recpt_status', // MES 外协入库单状态
+  MES_WM_PRODUCT_ISSUE_STATUS = 'mes_wm_product_issue_status', // MES 领料出库单状态
+  MES_WM_PRODUCT_PRODUCE_STATUS = 'mes_wm_product_produce_status', // MES 生产入库单状态
+  MES_WM_RETURN_VENDOR_STATUS = 'mes_wm_return_vendor_status', // MES 供应商退货单状态
+  MES_WM_QUALITY_STATUS = 'mes_wm_quality_status', // MES 质量状态
+  MES_WM_RETURN_ISSUE_STATUS = 'mes_wm_return_issue_status', // MES 生产退料单状态
+  MES_WM_RETURN_ISSUE_TYPE = 'mes_wm_return_issue_type', // MES 退料类型
+  MES_WM_PRODUCT_RECPT_STATUS = 'mes_wm_product_receipt_status', // MES 成品入库单状态
+  MES_WM_RETURN_SALES_STATUS = 'mes_wm_return_sales_status', // MES 销售退货单状态
+  MES_WM_PRODUCT_SALES_STATUS = 'mes_wm_product_sales_status', // MES 销售出库单状态
+  MES_WM_SALES_NOTICE_STATUS = 'mes_wm_sales_notice_status', // MES 发货通知单状态
+  MES_WM_MISC_ISSUE_TYPE = 'mes_wm_misc_issue_type', // MES 杂项出库类型
+  MES_WM_MISC_ISSUE_STATUS = 'mes_wm_misc_issue_status', // MES 杂项出库单状态
+  MES_WM_MISC_RECEIPT_TYPE = 'mes_wm_misc_receipt_type', // MES 杂项单类型
+  MES_WM_MISC_RECEIPT_STATUS = 'mes_wm_misc_receipt_status', // MES 杂项入库单状态
+  MES_WM_OUTSOURCE_RECEIPT_STATUS = 'mes_wm_outsource_receipt_status', // MES 外协入库单状态
+  MES_WM_OUTSOURCE_ISSUE_STATUS = 'mes_wm_outsource_issue_status', // MES 外协出库单状态
+  MES_MD_AUTO_CODE_PART_TYPE = 'mes_md_auto_code_part_type', // MES 编码规则分段类型
+  MES_MD_AUTO_CODE_PADDED_METHOD = 'mes_md_auto_code_padded_method', // MES 编码规则补齐方式
+  MES_MD_AUTO_CODE_CYCLE_METHOD = 'mes_md_auto_code_cycle_method', // MES 编码规则循环方式
+  MES_WM_BARCODE_FORMAT = 'mes_wm_barcode_format', // MES 条码格式
+  MES_WM_BARCODE_BIZ_TYPE = 'mes_wm_barcode_biz_type', // MES 条码业务类型
+  MES_WM_PACKAGE_STATUS = 'mes_wm_package_status', // MES 装箱单状态
+
+  // ========== IM - 即时通讯模块  ==========
+  IM_CONTENT_TYPE = 'im_content_type', // IM 内容类型
+  IM_MESSAGE_STATUS = 'im_message_status', // IM 消息状态：0=正常 / 2=已撤回（私聊 / 群聊共用）
+  IM_MESSAGE_RECEIPT_STATUS = 'im_message_receipt_status', // IM 消息回执状态：0=不需要 / 1=待完成 / 2=已完成
+  IM_FRIEND_STATUS = 'im_friend_status', // IM 好友状态
+  IM_FRIEND_ADD_SOURCE = 'im_friend_add_source', // IM 好友添加来源
+  IM_FRIEND_REQUEST_HANDLE_RESULT = 'im_friend_request_handle_result', // IM 好友申请处理结果
+  IM_GROUP_STATUS = 'im_group_status', // IM 群状态
+  IM_GROUP_MEMBER_ROLE = 'im_group_member_role', // IM 群成员角色
+  IM_GROUP_ADD_SOURCE = 'im_group_add_source', // IM 加群来源
+  IM_GROUP_REQUEST_HANDLE_RESULT = 'im_group_request_handle_result', // IM 加群申请处理结果
+  IM_RTC_CALL_MEDIA_TYPE = 'im_rtc_call_media_type', // IM 通话媒体类型：1=语音 / 2=视频
+  IM_RTC_CALL_CONVERSATION_TYPE = 'im_rtc_call_conversation_type', // IM 通话会话类型：1=私聊 / 2=群聊
+  IM_RTC_CALL_STATUS = 'im_rtc_call_status', // IM 通话状态：10=创建 / 20=进行中 / 30=已结束
+  IM_RTC_CALL_END_REASON = 'im_rtc_call_end_reason', // IM 通话结束原因：1=通话结束 / 2=已拒绝 / 3=已取消 / 4=无人接听 / 5=对方正忙 / 9=通话异常
+  IM_RTC_PARTICIPANT_ROLE = 'im_rtc_participant_role', // IM 通话参与角色：1=发起人 / 2=被邀请者 / 3=主动加入者
+  IM_RTC_PARTICIPANT_STATUS = 'im_rtc_participant_status', // IM 通话参与状态：10=邀请中 / 20=已加入 / 30=已拒绝 / 40=未应答 / 50=已离开
+  IM_CHANNEL_MATERIAL_TYPE = 'im_channel_material_type' // IM 频道素材内容类型：1=富文本 / 2=外链
 }

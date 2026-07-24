@@ -6,9 +6,6 @@
       </template>
       <div class="flex flex-col">
         <el-checkbox v-model="modelData.allowCancelRunningProcess" label="允许撤销审批中的申请" />
-        <div class="ml-22px">
-          <el-text type="info"> 第一个审批节点通过后，提交人仍可撤销申请 </el-text>
-        </div>
       </div>
     </el-form-item>
     <el-form-item class="mb-20px">
@@ -93,9 +90,9 @@
       <div class="flex flex-col">
         <el-radio-group v-model="modelData.titleSetting.enable">
           <div class="flex flex-col">
-            <el-radio :value="false"
-              >系统默认 <el-text type="info"> 展示流程名称 </el-text></el-radio
-            >
+            <el-radio :value="false">
+              系统默认 <el-text type="info"> 展示流程名称 </el-text>
+            </el-radio>
             <el-radio :value="true">
               自定义标题
               <el-text>

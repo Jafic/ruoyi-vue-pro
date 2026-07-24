@@ -318,6 +318,7 @@ const props = defineProps({
 const formData: Ref<Spu | undefined> = ref<Spu>() // 表单数据
 const skuList = ref<Sku[]>([
   {
+    name: '', // SKU 名称
     price: 0, // 商品价格
     marketPrice: 0, // 市场价
     costPrice: 0, // 成本价
@@ -449,6 +450,7 @@ const generateTableData = (propertyList: any[]) => {
   }
   for (const item of buildSkuList) {
     const row = {
+      name: '', // SKU 名称，提交时会自动使用 SPU 名称
       properties: Array.isArray(item) ? item : [item], // 如果只有一个属性的话返回的是一个 property 对象
       price: 0,
       marketPrice: 0,
@@ -491,22 +493,17 @@ const validateData = (propertyList: any[]) => {
 }
 
 /** 构建所有排列组合 */
-const build = (propertyValuesList: Property[][]) => {
+const build = (propertyValuesList: Property[][]): Property[][] => {
   if (propertyValuesList.length === 0) {
     return []
   } else if (propertyValuesList.length === 1) {
-    return propertyValuesList[0]
+    return propertyValuesList[0].map((item) => [item])
   } else {
     const result: Property[][] = []
     const rest = build(propertyValuesList.slice(1))
     for (let i = 0; i < propertyValuesList[0].length; i++) {
       for (let j = 0; j < rest.length; j++) {
-        // 第一次不是数组结构，后面的都是数组结构
-        if (Array.isArray(rest[j])) {
-          result.push([propertyValuesList[0][i], ...rest[j]])
-        } else {
-          result.push([propertyValuesList[0][i], rest[j]])
-        }
+        result.push([propertyValuesList[0][i], ...rest[j]])
       }
     }
     return result
@@ -525,6 +522,7 @@ watch(
     if (props.isBatch) {
       skuList.value = [
         {
+          name: '', // SKU 名称
           price: 0,
           marketPrice: 0,
           costPrice: 0,
@@ -574,3 +572,12 @@ const getSkuTableRef = () => {
 // 暴露出生成 sku 方法，给添加属性成功时调用
 defineExpose({ generateTableData, validateSku, getSkuTableRef })
 </script>
+<style>
+/*
+ * 避免滚动条遮挡最后一行数据
+ * noinspection CssUnusedSymbol
+ */
+.el-table.tabNumWidth .el-scrollbar {
+  padding-bottom: 10px;
+}
+</style>

@@ -10,6 +10,9 @@
       <el-form-item label="手机号" prop="mobile">
         <el-input v-model="formData.mobile" placeholder="请输入手机号" />
       </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="formData.email" maxlength="50" placeholder="请输入邮箱" />
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="formData.status">
           <el-radio
@@ -88,9 +91,10 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formData = ref<UserApi.UserVO>({
   id: undefined,
   mobile: undefined,
+  email: undefined,
   password: undefined,
   status: undefined,
   nickname: undefined,
@@ -105,6 +109,7 @@ const formData = ref({
 })
 const formRules = reactive({
   mobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }],
+  email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
@@ -120,7 +125,12 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await UserApi.getUser(id)
+      formData.value = {
+        ...(await UserApi.getUser(id)),
+        password: undefined,
+        tagIds: [],
+        groupId: undefined
+      }
     } finally {
       formLoading.value = false
     }
@@ -140,7 +150,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as UserApi.UserVO
+    const data = formData.value
     if (formType.value === 'create') {
       // 说明：目前暂时没有新增操作。如果自己业务需要，可以进行扩展
       // await UserApi.createUser(data)
@@ -162,6 +172,7 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     mobile: undefined,
+    email: undefined,
     password: undefined,
     status: undefined,
     nickname: undefined,

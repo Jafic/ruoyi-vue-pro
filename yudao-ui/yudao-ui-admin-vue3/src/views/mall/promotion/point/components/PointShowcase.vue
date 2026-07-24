@@ -5,7 +5,7 @@
       :key="pointActivity.id"
       class="select-box spu-pic"
     >
-      <el-tooltip :content="pointActivity.name">
+      <el-tooltip :content="pointActivity.spuName">
         <div class="relative h-full w-full">
           <el-image :src="pointActivity.picUrl" class="h-full w-full" />
           <Icon
@@ -132,11 +132,11 @@ const emitActivityChange = () => {
   display: flex;
   width: 60px;
   height: 60px;
+  cursor: pointer;
   border: 1px dashed var(--el-border-color-darker);
   border-radius: 8px;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 
 .spu-pic {

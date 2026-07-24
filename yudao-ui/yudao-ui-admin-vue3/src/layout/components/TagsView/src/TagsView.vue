@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, ref, unref, watch } from 'vue'
+import { computed, nextTick, ref, unref, watch } from 'vue'
 import type { RouteLocationNormalizedLoaded, RouterLinkProps } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { usePermissionStore } from '@/store/modules/permission'
@@ -139,10 +139,12 @@ const tagLinksRefs = useTemplateRefsList<RouterLinkProps>()
 
 const moveToTarget = (currentTag: RouteLocationNormalizedLoaded) => {
   const wrap$ = unref(scrollbarRef)?.wrapRef
+  if (!wrap$) return
   let firstTag: Nullable<RouterLinkProps> = null
   let lastTag: Nullable<RouterLinkProps> = null
 
   const tagList = unref(tagLinksRefs)
+  if (!tagList.length) return
   // find first tag and last tag
   if (tagList.length > 0) {
     firstTag = tagList[0]
@@ -169,12 +171,15 @@ const moveToTarget = (currentTag: RouteLocationNormalizedLoaded) => {
   } else {
     // find preTag and nextTag
     const currentIndex: number = tagList.findIndex(
-      (item) => (item?.to as RouteLocationNormalizedLoaded).fullPath === currentTag.fullPath
+      (item) =>
+        (item?.to as RouteLocationNormalizedLoaded | undefined)?.fullPath === currentTag.fullPath
     )
+    if (currentIndex < 0) return
     const tgsRefs = document.getElementsByClassName(`${prefixCls}__item`)
 
     const prevTag = tgsRefs[currentIndex - 1] as HTMLElement
     const nextTag = tgsRefs[currentIndex + 1] as HTMLElement
+    if (!prevTag || !nextTag) return
 
     // the tag's offsetLeft after of nextTag
     const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + 4
@@ -245,14 +250,13 @@ const move = (to: number) => {
   start()
 }
 
-const canShowIcon = (item: RouteLocationNormalizedLoaded) => {
-  if (
-    (item?.matched?.[1]?.meta?.icon && unref(tagsViewIcon)) ||
-    (item?.meta?.affix && unref(tagsViewIcon) && item?.meta?.icon)
-  ) {
-    return true
+const closeTabOnMouseMidClick = (e: MouseEvent, item) => {
+  // 中键：button === 1
+  if (e.button === 1) {
+    e.preventDefault()
+    e.stopPropagation()
+    closeSelectedTag(item)
   }
-  return false
 }
 
 onBeforeMount(() => {
@@ -293,6 +297,7 @@ watch(
             v-for="item in visitedViews"
             :key="item.fullPath"
             :ref="itemRefs.set"
+            @auxclick="closeTabOnMouseMidClick($event, item)"
             :class="[
               `${prefixCls}__item`,
               tagsViewImmerse ? `${prefixCls}__item--immerse` : '',

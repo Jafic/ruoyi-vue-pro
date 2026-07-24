@@ -84,7 +84,7 @@
               <el-option
                 v-for="data in receivablePlanList"
                 :key="data.id"
-                :disabled="data.receivableId"
+                :disabled="!!data.receivableId"
                 :label="'第 ' + data.period + ' 期'"
                 :value="data.id!"
               />
@@ -150,7 +150,7 @@ import { ReceivableVO } from '@/api/crm/receivable'
 import * as UserApi from '@/api/system/user'
 import * as CustomerApi from '@/api/crm/customer'
 import * as ContractApi from '@/api/crm/contract'
-import { useUserStore } from '@/store/modules/user'
+import { getCurrentUserId } from '@/utils/auth'
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 
 const { t } = useI18n() // 国际化
@@ -200,14 +200,16 @@ const open = async (
   customerList.value = await CustomerApi.getCustomerSimpleList()
   // 默认新建时选中自己
   if (formType.value === 'create') {
-    formData.value.ownerUserId = useUserStore().getUser.id
+    formData.value.ownerUserId = getCurrentUserId()
   }
   // 从回款计划创建回款
   if (receivablePlan) {
     formData.value.customerId = receivablePlan.customerId
     await handleCustomerChange(receivablePlan.customerId)
     formData.value.contractId = receivablePlan.contractId
-    await handleContractChange(receivablePlan.contractId)
+    if (receivablePlan.contractId) {
+      await handleContractChange(receivablePlan.contractId)
+    }
     if (receivablePlan.id) {
       formData.value.planId = receivablePlan.id
       formData.value.price = receivablePlan.price

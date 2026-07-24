@@ -178,8 +178,7 @@
               link
               type="primary"
               @click="openModelForm('update', scope.row.id)"
-              v-if="hasPermiUpdate"
-              :disabled="!isManagerUser(scope.row)"
+              :disabled="!isManagerUser(scope.row) && !hasPermiUpdate"
             >
               修改
             </el-button>
@@ -187,8 +186,7 @@
               link
               type="primary"
               @click="openModelForm('copy', scope.row.id)"
-              v-if="hasPermiUpdate"
-              :disabled="!isManagerUser(scope.row)"
+              :disabled="!isManagerUser(scope.row) && !hasPermiUpdate"
             >
               复制
             </el-button>
@@ -197,8 +195,7 @@
               class="!ml-5px"
               type="primary"
               @click="handleDeploy(scope.row)"
-              v-if="hasPermiDeploy"
-              :disabled="!isManagerUser(scope.row)"
+              :disabled="!isManagerUser(scope.row) && !hasPermiDeploy"
             >
               发布
             </el-button>
@@ -287,7 +284,7 @@ import * as FormApi from '@/api/bpm/form'
 import { setConfAndFields2 } from '@/utils/formCreate'
 import { BpmModelFormType } from '@/utils/constants'
 import { checkPermi } from '@/utils/permission'
-import { useUserStoreWithOut } from '@/store/modules/user'
+import { getCurrentUserId } from '@/utils/auth'
 import { useAppStore } from '@/store/modules/app'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { useDebounceFn } from '@vueuse/core'
@@ -336,7 +333,6 @@ const emit = defineEmits(['success'])
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 const { push } = useRouter() // 路由
-const userStore = useUserStoreWithOut() // 用户信息缓存
 const isDark = computed(() => useAppStore().getIsDark) // 是否黑暗模式
 const router = useRouter() // 路由
 
@@ -504,7 +500,7 @@ const handleFormDetail = async (row: any) => {
 
 /** 判断是否可以操作 */
 const isManagerUser = (row: any) => {
-  const userId = userStore.getUser.id
+  const userId = getCurrentUserId()
   return row.managerUserIds && row.managerUserIds.includes(userId)
 }
 
@@ -540,7 +536,6 @@ const handleModelSortCancel = () => {
 }
 
 /** 创建拖拽实例 */
-const tableRef = ref()
 const initSort = useDebounceFn(() => {
   const table = document.querySelector(`.${props.categoryInfo.name} .el-table__body-wrapper tbody`)
   if (!table) return

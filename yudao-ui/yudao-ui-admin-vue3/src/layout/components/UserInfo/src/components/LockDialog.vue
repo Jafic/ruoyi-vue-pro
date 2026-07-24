@@ -84,14 +84,14 @@ const handleLock = async () => {
       </el-form-item>
     </el-form>
     <template #footer>
-      <ElButton type="primary" @click="handleLock">{{ t('lock.lock') }}</ElButton>
+      <el-button type="primary" @click="handleLock">{{ t('lock.lock') }}</el-button>
     </template>
   </Dialog>
 </template>
 
 <style lang="scss" scoped>
 :global(.v-lock-dialog) {
-  @media (max-width: 767px) {
+  @media (width <= 767px) {
     max-width: calc(100vw - 16px);
   }
 }

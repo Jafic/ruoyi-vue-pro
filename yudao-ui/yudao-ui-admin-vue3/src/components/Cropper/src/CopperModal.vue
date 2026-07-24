@@ -23,72 +23,81 @@
           <div :class="`${prefixCls}-toolbar`">
             <el-upload :beforeUpload="handleBeforeUpload" :fileList="[]" accept="image/*">
               <el-tooltip :content="t('cropper.selectImage')" placement="bottom">
-                <XButton preIcon="ant-design:upload-outlined" type="primary" />
+                <el-button type="primary">
+                  <Icon icon="ant-design:upload-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
             </el-upload>
             <el-space>
               <el-tooltip :content="t('cropper.btn_reset')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="ant-design:reload-outlined"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('reset')"
-                />
+                >
+                  <Icon icon="ant-design:reload-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_rotate_left')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="ant-design:rotate-left-outlined"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('rotate', -45)"
-                />
+                >
+                  <Icon icon="ant-design:rotate-left-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_rotate_right')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="ant-design:rotate-right-outlined"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('rotate', 45)"
-                />
+                >
+                  <Icon icon="ant-design:rotate-right-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_scale_x')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="vaadin:arrows-long-h"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('scaleX')"
-                />
+                >
+                  <Icon icon="vaadin:arrows-long-h" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_scale_y')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="vaadin:arrows-long-v"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('scaleY')"
-                />
+                >
+                  <Icon icon="vaadin:arrows-long-v" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_zoom_in')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="ant-design:zoom-in-outlined"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('zoom', 0.1)"
-                />
+                >
+                  <Icon icon="ant-design:zoom-in-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
               <el-tooltip :content="t('cropper.btn_zoom_out')" placement="bottom">
-                <XButton
+                <el-button
                   :disabled="!src"
-                  preIcon="ant-design:zoom-out-outlined"
                   size="small"
                   type="primary"
                   @click="handlerToolbar('zoom', -0.1)"
-                />
+                >
+                  <Icon icon="ant-design:zoom-out-outlined" class="mr-1px" />
+                </el-button>
               </el-tooltip>
             </el-space>
           </div>
@@ -162,13 +171,24 @@ function handleReady(cropperInstance: Cropper) {
 }
 
 function handlerToolbar(event: string, arg?: number) {
-  if (event === 'scaleX') {
-    scaleX = arg = scaleX === -1 ? 1 : -1
+  if (!cropper.value) return
+  const cropperImage = cropper.value.getCropperImage()
+  const cropperSelection = cropper.value.getCropperSelection()
+
+  if (event === 'reset') {
+    cropperImage?.$resetTransform()
+    cropperSelection?.$reset()
+  } else if (event === 'rotate') {
+    cropperImage?.$rotate(`${arg}deg`)
+  } else if (event === 'scaleX') {
+    scaleX = scaleX === -1 ? 1 : -1
+    cropperImage?.$scale(scaleX, 1)
+  } else if (event === 'scaleY') {
+    scaleY = scaleY === -1 ? 1 : -1
+    cropperImage?.$scale(1, scaleY)
+  } else if (event === 'zoom') {
+    cropperImage?.$zoom(arg!)
   }
-  if (event === 'scaleY') {
-    scaleY = arg = scaleY === -1 ? 1 : -1
-  }
-  cropper?.value?.[event]?.(arg)
 }
 
 async function handleOk() {
@@ -208,7 +228,8 @@ $prefix-cls: #{$namespace}-cropper-am;
   &-cropper {
     height: 300px;
     background: #eee;
-    background-image: linear-gradient(
+    background-image:
+      linear-gradient(
         45deg,
         rgb(0 0 0 / 25%) 25%,
         transparent 0,

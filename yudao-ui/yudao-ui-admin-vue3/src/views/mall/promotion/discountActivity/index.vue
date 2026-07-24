@@ -70,17 +70,17 @@
           ~ {{ formatDate(scope.row.endTime, 'YYYY-MM-DD') }}
         </template>
       </el-table-column>
-<!--      <el-table-column label="商品图片" prop="spuName" min-width="80">-->
-<!--        <template #default="scope">-->
-<!--          <el-image-->
-<!--            :src="scope.row.picUrl"-->
-<!--            class="h-40px w-40px"-->
-<!--            :preview-src-list="[scope.row.picUrl]"-->
-<!--            preview-teleported-->
-<!--          />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
-<!--      <el-table-column label="商品标题" prop="spuName" min-width="300" />-->
+      <!--      <el-table-column label="商品图片" prop="spuName" min-width="80">-->
+      <!--        <template #default="scope">-->
+      <!--          <el-image-->
+      <!--            :src="scope.row.picUrl"-->
+      <!--            class="h-40px w-40px"-->
+      <!--            :preview-src-list="[scope.row.picUrl]"-->
+      <!--            preview-teleported-->
+      <!--          />-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
+      <!--      <el-table-column label="商品标题" prop="spuName" min-width="300" />-->
       <el-table-column label="活动状态" align="center" prop="status" min-width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />
@@ -142,8 +142,6 @@ import { dateFormatter } from '@/utils/formatTime'
 import * as DiscountActivity from '@/api/mall/promotion/discount/discountActivity'
 import DiscountActivityForm from './DiscountActivityForm.vue'
 import { formatDate } from '@/utils/formatTime'
-import { fenToYuanFormat } from '@/utils/formatter'
-import { fenToYuan } from '@/utils'
 
 defineOptions({ name: 'DiscountActivity' })
 
@@ -161,7 +159,6 @@ const queryParams = reactive({
   status: null
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
@@ -217,19 +214,6 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {}
-}
-
-const configList = ref([]) // 时段配置精简列表
-// const formatConfigNames = (configId) => {
-//   const config = configList.value.find((item) => item.id === configId)
-//   return config != null ? `${config.name}[${config.startTime} ~ ${config.endTime}]` : ''
-// }
-
-const formatSeckillPrice = (products) => {
-  // const seckillPrice = Math.min(...products.map((item) => item.seckillPrice))
-  console.log(products)
-  const seckillPrice = 200
-  return `￥${fenToYuan(seckillPrice)}`
 }
 
 /** 初始化 **/

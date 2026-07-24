@@ -48,7 +48,7 @@
               <Icon icon="ep:document" class="mr-8px text-[#409eff]" />
               <span class="text-[13px] text-[#303133] break-all">{{ file.name }}</span>
             </div>
-            <el-button type="danger" link @click="removeFile(index)" class="ml-2">
+            <el-button type="danger" link @click="removeFile(Number(index))" class="ml-2">
               <Icon icon="ep:delete" />
             </el-button>
           </div>
@@ -83,8 +83,6 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const formRef = ref() // 表单引用
-const uploadRef = ref() // 上传组件引用
 const parent = inject('parent', null) // 获取父组件实例
 const { uploadUrl, httpRequest } = useUpload() // 使用上传组件的钩子
 const message = useMessage() // 消息弹窗

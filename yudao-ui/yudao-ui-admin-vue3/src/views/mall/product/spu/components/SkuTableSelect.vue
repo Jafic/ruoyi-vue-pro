@@ -3,8 +3,8 @@
     <el-table v-loading="loading" :data="list" show-overflow-tooltip>
       <el-table-column label="#" width="55">
         <template #default="{ row }">
-          <el-radio :value="row.id" v-model="selectedSkuId" @change="handleSelected(row)"
-            >&nbsp;
+          <el-radio :value="row.id" v-model="selectedSkuId" @change="handleSelected(row)">
+            &nbsp;
           </el-radio>
         </template>
       </el-table-column>
@@ -41,10 +41,9 @@ import { fenToYuan } from '@/utils'
 defineOptions({ name: 'SkuTableSelect' })
 
 const props = defineProps({
-  spuId: propTypes.number.def(null)
+  spuId: propTypes.number.def(undefined)
 })
 
-const message = useMessage() // 消息弹窗
 const list = ref<any[]>([]) // 列表的数据
 const loading = ref(false) // 列表的加载中
 const dialogVisible = ref(false) // 弹窗的是否展示

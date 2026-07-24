@@ -5,7 +5,12 @@
       <el-table-column key="id" align="center" label="商品编号" width="180" prop="id" />
       <el-table-column label="商品图" min-width="80">
         <template #default="{ row }">
-          <el-image :src="row.picUrl" class="h-30px w-30px" @click="imagePreview(row.picUrl)" />
+          <el-image
+            :src="row.picUrl"
+            :preview-src-list="row.picUrl ? [row.picUrl] : []"
+            class="h-30px w-30px"
+            preview-teleported
+          />
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" label="商品名称" min-width="300" prop="name" />
@@ -42,12 +47,9 @@ import { dateFormatter } from '@/utils/formatTime'
 import * as FavoriteApi from '@/api/mall/product/favorite'
 import { floatToFixed2 } from '@/utils'
 
-const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
-const list = ref([]) // 列表的数据
+const list = ref<FavoriteApi.Favorite[]>([]) // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -55,7 +57,6 @@ const queryParams = reactive({
   createTime: [],
   userId: NaN
 })
-const queryFormRef = ref() // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {
@@ -67,18 +68,6 @@ const getList = async () => {
   } finally {
     loading.value = false
   }
-}
-
-/** 搜索按钮操作 */
-const handleQuery = () => {
-  queryParams.pageNo = 1
-  getList()
-}
-
-/** 重置按钮操作 */
-const resetQuery = () => {
-  queryFormRef.value.resetFields()
-  handleQuery()
 }
 
 const { userId } = defineProps({

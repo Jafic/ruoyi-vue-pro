@@ -7,7 +7,7 @@
       label-width="100px"
       v-loading="formLoading"
     >
-       <el-form-item label="名字" prop="name">
+      <el-form-item label="名字" prop="name">
         <el-input v-model="formData.name" placeholder="请输入名字" />
       </el-form-item>
       <el-form-item label="分数" prop="score">
@@ -30,16 +30,16 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formData = ref<Demo03Course>({
   id: undefined,
   studentId: undefined,
   name: undefined,
-  score: undefined,
+  score: undefined
 })
 const formRules = reactive({
   studentId: [{ required: true, message: '学生编号不能为空', trigger: 'blur' }],
   name: [{ required: true, message: '名字不能为空', trigger: 'blur' }],
-  score: [{ required: true, message: '分数不能为空', trigger: 'blur' }],
+  score: [{ required: true, message: '分数不能为空', trigger: 'blur' }]
 })
 const formRef = ref() // 表单 Ref
 
@@ -49,7 +49,7 @@ const open = async (type: string, id?: number, studentId?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  formData.value.studentId = studentId  as any
+  formData.value.studentId = studentId
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -70,7 +70,7 @@ const submitForm = async () => {
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as  Demo03Course
+    const data = formData.value
     if (formType.value === 'create') {
       await Demo03StudentApi.createDemo03Course(data)
       message.success(t('common.createSuccess'))
@@ -92,7 +92,7 @@ const resetForm = () => {
     id: undefined,
     studentId: undefined,
     name: undefined,
-    score: undefined,
+    score: undefined
   }
   formRef.value?.resetFields()
 }

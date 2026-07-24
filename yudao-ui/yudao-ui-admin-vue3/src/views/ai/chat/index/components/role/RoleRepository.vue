@@ -167,7 +167,7 @@ const handlerCardEdit = async (role) => {
 }
 
 /** 添加角色成功 */
-const handlerAddRoleSuccess = async (e) => {
+const handlerAddRoleSuccess = async (_e) => {
   // 刷新数据
   await getActiveTabsRole()
 }
@@ -228,8 +228,8 @@ onMounted(async () => {
 }
 
 .el-tabs__header {
-  margin: 0 !important;
   padding: 0 !important;
+  margin: 0 !important;
 }
 
 .el-tabs__nav-wrap {
@@ -241,6 +241,6 @@ onMounted(async () => {
 }
 
 .el-tab-pane {
-  padding: 8px 0 0 0 !important;
+  padding: 8px 0 0 !important;
 }
 </style>

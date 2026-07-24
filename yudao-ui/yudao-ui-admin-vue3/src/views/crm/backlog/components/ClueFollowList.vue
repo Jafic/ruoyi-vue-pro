@@ -112,10 +112,10 @@ const list = ref([]) // 列表的数据
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
+  sceneType: 1,
   followUpStatus: false,
   transformStatus: false
 })
-const queryFormRef = ref() // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {

@@ -173,7 +173,10 @@
                 <div class="mr-2.5 flex items-center">
                   <el-image :src="defaultIconUrl" class="w-[18px] h-[18px]" />
                 </div>
-                <div class="text-[16px] font-600 flex-1">{{ item.deviceName }}</div>
+                <div
+                  class="text-[16px] font-600 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                  >{{ item.deviceName }}</div
+                >
                 <!-- 添加设备状态标签 -->
                 <div class="inline-flex items-center">
                   <div
@@ -210,7 +213,7 @@
                   <div class="mb-2.5 last:mb-0">
                     <span class="text-[#717c8e] mr-2.5">备注名称</span>
                     <span
-                      class="text-[#0b1d30] inline-block align-middle overflow-hidden text-ellipsis whitespace-nowrap max-w-[130px]"
+                      class="text-[var(--el-text-color-primary)] inline-block align-middle overflow-hidden text-ellipsis whitespace-nowrap max-w-[130px]"
                     >
                       {{ item.nickname || item.deviceName }}
                     </span>
@@ -308,9 +311,9 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="设备状态" align="center" prop="status">
+      <el-table-column label="设备状态" align="center" prop="state">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.IOT_DEVICE_STATE" :value="scope.row.state" />
         </template>
       </el-table-column>
       <el-table-column
@@ -371,7 +374,8 @@
 <script setup lang="ts">
 import { DICT_TYPE, getIntDictOptions, getDictLabel } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
-import { DeviceApi, DeviceVO, DeviceStateEnum } from '@/api/iot/device/device'
+import { DeviceApi, DeviceVO } from '@/api/iot/device/device'
+import { DeviceStateEnum } from '@/views/iot/utils/constants'
 import DeviceForm from './DeviceForm.vue'
 import { ProductApi, ProductVO } from '@/api/iot/product/product'
 import { DeviceGroupApi, DeviceGroupVO } from '@/api/iot/device/group'
@@ -384,14 +388,14 @@ defineOptions({ name: 'IoTDevice' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-const route = useRoute()
+const route = useRoute() // 路由对象
 
 const loading = ref(true) // 列表加载中
 const list = ref<DeviceVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
-  pageSize: 10,
+  pageSize: 12,
   deviceName: undefined,
   productId: undefined as number | undefined,
   deviceType: undefined,

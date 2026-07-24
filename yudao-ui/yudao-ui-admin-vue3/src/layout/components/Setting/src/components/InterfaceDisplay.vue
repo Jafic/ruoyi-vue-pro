@@ -4,6 +4,7 @@ import { setCssVar } from '@/utils'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useWatermark } from '@/hooks/web/useWatermark'
 import { useAppStore } from '@/store/modules/app'
+import { isHeaderNavLayout } from '@/utils/layout'
 
 defineOptions({ name: 'InterfaceDisplay' })
 
@@ -62,6 +63,13 @@ const message = ref(appStore.getMessage)
 
 const messageChange = (show: boolean) => {
   appStore.setMessage(show)
+}
+
+// IM 即时通讯图标
+const im = ref(appStore.getIm)
+
+const imChange = (show: boolean) => {
+  appStore.setIm(show)
 }
 
 // 标签页
@@ -139,7 +147,7 @@ const layout = computed(() => appStore.getLayout)
 watch(
   () => layout.value,
   (n) => {
-    if (n === 'top') {
+    if (isHeaderNavLayout(n)) {
       appStore.setCollapse(false)
     }
   }
@@ -181,6 +189,11 @@ watch(
     <div class="flex items-center justify-between">
       <span class="text-14px">{{ t('setting.messageIcon') }}</span>
       <ElSwitch v-model="message" @change="messageChange" />
+    </div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-14px">{{ t('setting.imIcon') }}</span>
+      <ElSwitch v-model="im" @change="imChange" />
     </div>
 
     <div class="flex items-center justify-between">
@@ -228,9 +241,9 @@ watch(
       <ElSwitch v-model="fixedMenu" @change="fixedMenuChange" />
     </div>
 
-    <div class="flex items-center justify-between">
-      <span class="text-14px">{{ t('watermark.watermark') }}</span>
-      <ElInput v-model="water" class="right-1 w-20" @change="setWater()" />
+    <div class="flex items-center justify-between gap-10px">
+      <span class="shrink-0 whitespace-nowrap text-14px">{{ t('watermark.watermark') }}</span>
+      <ElInput v-model="water" class="min-w-0 flex-1" @change="setWater()" />
     </div>
   </div>
 </template>

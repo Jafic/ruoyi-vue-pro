@@ -1,21 +1,22 @@
 <template>
   <div>
-    <div style="margin-bottom: 10px"
-      >当前选择：<el-input v-model="isoString" readonly style="width: 300px"
-    /></div>
+    <div style="margin-bottom: 10px">
+      当前选择：<el-input v-model="isoString" readonly style="width: 300px" />
+    </div>
     <div v-for="unit in units" :key="unit.key" style="margin-bottom: 8px">
       <span>{{ unit.label }}：</span>
       <el-button-group>
         <el-button
           v-for="val in unit.presets"
           :key="val"
-          size="mini"
+          size="small"
           @click="setUnit(unit.key, val)"
-          >{{ val }}</el-button
         >
+          {{ val }}
+        </el-button>
         <el-input
           v-model.number="custom[unit.key]"
-          size="mini"
+          size="small"
           style="width: 60px; margin-left: 8px"
           placeholder="自定义"
           @change="setUnit(unit.key, custom[unit.key])"

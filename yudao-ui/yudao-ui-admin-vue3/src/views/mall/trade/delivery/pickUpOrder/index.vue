@@ -22,9 +22,9 @@
           value-format="YYYY-MM-DD HH:mm:ss"
         />
       </el-form-item>
-      <el-form-item label="自提门店" prop="pickUpStoreId">
+      <el-form-item label="自提门店" prop="pickUpStoreIds">
         <el-select
-          v-model="queryParams.pickUpStoreId"
+          v-model="queryParams.pickUpStoreIds"
           class="!w-280px"
           placeholder="全部"
           @change="handleQuery"
@@ -33,7 +33,7 @@
             v-for="item in pickUpStoreList"
             :key="item.id"
             :label="item.name"
-            :value="item.id"
+            :value="item.id!"
           />
         </el-select>
       </el-form-item>
@@ -111,7 +111,7 @@
         icon-bg-color="text-purple-500"
         prefix="￥"
         :decimals="2"
-        :value="fenToYuan(summary?.orderPayPrice || 0)"
+        :value="Number(fenToYuan(summary?.orderPayPrice || 0))"
       />
     </el-col>
     <el-col :sm="6" :xs="12" v-loading="loading">
@@ -131,7 +131,7 @@
         icon-bg-color="text-green-500"
         prefix="￥"
         :decimals="2"
-        :value="fenToYuan(summary?.afterSalePrice || 0)"
+        :value="Number(fenToYuan(summary?.afterSalePrice || 0))"
       />
     </el-col>
   </el-row>
@@ -228,12 +228,30 @@ import { TradeOrderSummaryRespVO } from '@/api/mall/trade/order'
 import { DeliveryPickUpStoreVO } from '@/api/mall/trade/delivery/pickUpStore'
 import OrderPickUpForm from '@/views/mall/trade/order/form/OrderPickUpForm.vue'
 import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/store/modules/user'
+import { getCurrentUserId } from '@/utils/auth'
 const message = useMessage() // 消息弹窗
 
-const port = ref('')
-const ports = ref([])
-const reader = ref('')
+type SerialReader = ReadableStreamDefaultReader<Uint8Array>
+type SerialPort = {
+  readable: ReadableStream<Uint8Array>
+  open: (options: SerialOptions) => Promise<void>
+  close: () => Promise<void>
+}
+type SerialOptions = {
+  baudRate: number
+  dataBits?: number
+  stopBits?: number
+}
+type SerialNavigator = Navigator & {
+  serial: {
+    requestPort: () => Promise<SerialPort>
+    getPorts: () => Promise<SerialPort[]>
+  }
+}
+
+const port = ref<SerialPort>()
+const ports = ref<SerialPort[]>([])
+const reader = ref<SerialReader>()
 
 defineOptions({ name: 'PickUpOrder' })
 
@@ -251,7 +269,7 @@ const INIT_QUERY_PARAMS = {
   // 配送方式
   deliveryType: DeliveryTypeEnum.PICK_UP.type,
   // 自提门店
-  pickUpStoreId: -1
+  pickUpStoreIds: -1
 } // 初始表单参数
 
 const queryParams = ref({ ...INIT_QUERY_PARAMS }) // 表单搜索
@@ -264,7 +282,7 @@ const isUse = ref(true) // 是否可核销
 // 订单聚合搜索 select 类型配置（动态搜索）
 const dynamicSearchList = ref([
   { value: 'no', label: '订单号' },
-  { value: 'userId', label: '用户UID' },
+  { value: 'userId', label: '用户 UID' },
   { value: 'userNickname', label: '用户昵称' },
   { value: 'userMobile', label: '用户电话' }
 ])
@@ -309,7 +327,7 @@ const resetQuery = () => {
   queryFormRef.value?.resetFields()
   queryParams.value = { ...INIT_QUERY_PARAMS }
   if (pickUpStoreList.value.length > 0) {
-    queryParams.value.pickUpStoreId = pickUpStoreList.value[0].id
+    queryParams.value.pickUpStoreIds = pickUpStoreList.value[0].id!
   }
   handleQuery()
 }
@@ -319,7 +337,7 @@ const pickUpStoreList = ref<DeliveryPickUpStoreVO[]>([])
 const getPickUpStoreList = async () => {
   pickUpStoreList.value = await PickUpStoreApi.getSimpleDeliveryPickUpStoreList()
   // 移除自己无法核销的门店
-  const userId = useUserStore().getUser.id
+  const userId = getCurrentUserId()
   pickUpStoreList.value = pickUpStoreList.value.filter((item) =>
     item.verifyUserIds?.includes(userId)
   )
@@ -335,21 +353,16 @@ const handlePickup = () => {
 const connectToSerialPort = async () => {
   try {
     // 判断浏览器支持串口通信
-    if (
-      'serial' in navigator &&
-      navigator.serial != null &&
-      typeof navigator.serial === 'object' &&
-      'requestPort' in navigator.serial
-    ) {
+    if ('serial' in navigator) {
+      const serial = (navigator as SerialNavigator).serial
       // 提示用户选择一个串口
-      port.value = await navigator.serial.requestPort()
+      port.value = await serial.requestPort()
+      // 获取用户之前授予该网站访问权限的所有串口。
+      ports.value = await serial.getPorts()
     } else {
       message.error('浏览器不支持扫码枪连接，请更换浏览器重试')
       return
     }
-
-    // 获取用户之前授予该网站访问权限的所有串口。
-    ports.value = await navigator.serial.getPorts()
 
     // console.log(port.value, ports.value);
     // console.log(port.value)
@@ -369,6 +382,9 @@ const connectToSerialPort = async () => {
 
 /** 监听扫码枪输入 */
 const readData = async () => {
+  if (!port.value) {
+    return
+  }
   reader.value = port.value.readable.getReader()
   let data = '' //扫码数据
   // 监听来自串口的数据
@@ -395,10 +411,10 @@ const readData = async () => {
 
 /** 断开扫码枪 */
 const cutPort = async () => {
-  if (port.value !== '') {
-    await reader.value.cancel()
+  if (port.value) {
+    await reader.value?.cancel()
     await port.value.close()
-    port.value = ''
+    port.value = undefined
     console.log('断开扫码枪连接')
     message.success('已成功断开扫码枪连接')
     serialPort.value = false
@@ -418,7 +434,7 @@ onMounted(async () => {
   }
 
   // 查询
-  queryParams.value.pickUpStoreId = pickUpStoreList.value[0].id
+  queryParams.value.pickUpStoreIds = pickUpStoreList.value[0].id!
   isUse.value = false
   await getList()
 })

@@ -18,9 +18,9 @@
         <el-button type="primary" plain>选择视频</el-button>
       </template>
       <template #tip>
-        <span class="el-upload__tip" style="margin-left: 10px"
-          >格式支持 MP4，文件大小不超过 10MB</span
-        >
+        <span class="el-upload__tip" style="margin-left: 10px">
+          格式支持 MP4，文件大小不超过 10MB
+        </span>
       </template>
     </el-upload>
     <el-divider />
@@ -101,7 +101,7 @@ const uploadVideoRef = ref<UploadInstance | null>(null)
 const submitVideo = () => {
   uploadFormRef.value?.validate((valid) => {
     if (!valid) {
-      return false
+      return
     }
     uploadVideoRef.value?.submit()
   })

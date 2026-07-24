@@ -157,7 +157,7 @@
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as SeckillActivityApi from '@/api/mall/promotion/seckill/seckillActivity'
-import { SeckillConfigApi } from '@/api/mall/promotion/seckill/seckillConfig'
+import { SeckillConfigApi, SeckillConfigVO } from '@/api/mall/promotion/seckill/seckillConfig'
 import SeckillActivityForm from './SeckillActivityForm.vue'
 import { formatDate } from '@/utils/formatTime'
 import { fenToYuanFormat } from '@/utils/formatter'
@@ -178,7 +178,6 @@ const queryParams = reactive({
   status: null
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
@@ -236,7 +235,7 @@ const handleDelete = async (id: number) => {
   } catch {}
 }
 
-const configList = ref([]) // 时段配置精简列表
+const configList = ref<SeckillConfigVO[]>([]) // 时段配置精简列表
 const formatConfigNames = (configId) => {
   const config = configList.value.find((item) => item.id === configId)
   return config != null ? `${config.name}[${config.startTime} ~ ${config.endTime}]` : ''

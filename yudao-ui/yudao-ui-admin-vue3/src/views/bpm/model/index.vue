@@ -110,7 +110,6 @@ const isCategorySorting = ref(false) // 是否 category 正处于排序状态
 const queryParams = reactive({
   name: undefined
 })
-const queryFormRef = ref() // 搜索的表单
 const categoryGroup: any = ref([]) // 按照 category 分组的数据
 const originalData: any = ref([]) // 原始数据
 
@@ -220,7 +219,7 @@ onActivated(() => {
   .el-form--inline .el-form-item {
     margin-right: 10px;
   }
-  
+
   .el-divider--horizontal {
     margin-top: 6px;
   }

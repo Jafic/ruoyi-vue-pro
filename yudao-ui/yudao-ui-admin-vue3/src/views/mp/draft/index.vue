@@ -106,11 +106,13 @@ const onAccountChanged = (id: number) => {
 }
 
 // 关闭弹窗
-const onBeforeDialogClose = async (onDone: () => {}) => {
+const onBeforeDialogClose = async (onDone: () => void) => {
   try {
     await message.confirm('修改内容可能还未保存，确定关闭吗?')
     onDone()
-  } catch {}
+  } catch {
+    //
+  }
 }
 
 // ======================== 列表查询 ========================
@@ -179,7 +181,9 @@ const onPublish = async (item: Article) => {
     await MpFreePublishApi.submitFreePublish(accountId.value, mediaId)
     message.notifySuccess('发布成功')
     await getList()
-  } catch {}
+  } catch {
+    //
+  }
 }
 
 /** 删除按钮操作 */
@@ -190,7 +194,9 @@ const onDelete = async (item: Article) => {
     await MpDraftApi.deleteDraft(accountId.value, mediaId)
     message.notifySuccess('删除成功')
     await getList()
-  } catch {}
+  } catch {
+    //
+  }
 }
 </script>
 

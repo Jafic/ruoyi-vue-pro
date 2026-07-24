@@ -63,7 +63,7 @@
             :key="index"
             :src="url"
             :preview-src-list="scope?.row.sliderPicUrls"
-            :initial-index="index"
+            :initial-index="Number(index)"
             preview-teleported
           />
         </template>
@@ -122,7 +122,7 @@
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
-import { SeckillConfigApi, SeckillConfigVO } from '@/api/mall/promotion/seckill/seckillConfig.ts'
+import { SeckillConfigApi, SeckillConfigVO } from '@/api/mall/promotion/seckill/seckillConfig'
 import SeckillConfigForm from './SeckillConfigForm.vue'
 import { CommonStatusEnum } from '@/utils/constants'
 
@@ -142,7 +142,6 @@ const queryParams = reactive({
   status: undefined
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
 /** 查询列表 */
 const getList = async () => {

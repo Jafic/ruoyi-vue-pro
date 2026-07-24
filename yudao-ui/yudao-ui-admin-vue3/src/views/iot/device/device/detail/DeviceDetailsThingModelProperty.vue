@@ -40,7 +40,7 @@
           inline-prompt
           active-text="定时刷新"
           inactive-text="定时刷新"
-          style="--el-switch-on-color: #13ce66"
+          :style="{ '--el-switch-on-color': '#13ce66' }"
         />
       </el-form-item>
     </el-form>
@@ -99,13 +99,13 @@
               <div class="text-[14px]">
                 <div class="mb-2.5 last:mb-0">
                   <span class="text-[#717c8e] mr-2.5">属性值</span>
-                  <span class="text-[#0b1d30] font-600">
+                  <span class="text-[var(--el-text-color-primary)] font-600">
                     {{ formatValueWithUnit(item) }}
                   </span>
                 </div>
                 <div class="mb-2.5 last:mb-0">
                   <span class="text-[#717c8e] mr-2.5">更新时间</span>
-                  <span class="text-[#0b1d30] text-[12px]">
+                  <span class="text-[var(--el-text-color-primary)] text-[12px]">
                     {{ item.updateTime ? formatDate(item.updateTime) : '-' }}
                   </span>
                 </div>
@@ -166,8 +166,6 @@ const queryParams = reactive({
 const autoRefresh = ref(false) // 自动刷新开关
 let autoRefreshTimer: any = null // 定时器
 const viewMode = ref<'card' | 'list'>('card') // 视图模式状态
-
-const queryFormRef = ref() // 搜索的表单
 
 /** 查询列表 */
 const getList = async () => {

@@ -11,7 +11,7 @@
       label-width="68px"
     >
       <el-form-item label="公众号" prop="accountId">
-        <WxAccountSelect @change="onAccountChanged" />
+        <WxAccountSelect @change="onAccountChanged" :modelValue="queryParams.accountId" />
       </el-form-item>
       <el-form-item label="用户标识" prop="openid">
         <el-input
@@ -49,12 +49,13 @@
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list">
+    <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" v-if="isDialog" />
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="用户标识" align="center" prop="openid" width="260" />
       <el-table-column label="用户头像" min-width="80px" prop="headImageUrl">
         <template #default="scope">
-          <el-avatar :src="scope.row.headImageUrl"/>
+          <el-avatar :src="scope.row.headImageUrl" />
         </template>
       </el-table-column>
       <el-table-column label="昵称" align="center" prop="nickname" />
@@ -111,14 +112,17 @@ import * as MpTagApi from '@/api/mp/tag'
 import WxAccountSelect from '@/views/mp/components/wx-account-select'
 import type { FormInstance } from 'element-plus'
 import UserForm from './UserForm.vue'
+import { ref } from 'vue'
 
 defineOptions({ name: 'MpUser' })
 
 const message = useMessage() // 消息
 
+const isDialog = ref(false) // 是不是弹窗调用
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
 const list = ref<any[]>([]) // 列表的数据
+const multipleSelection = ref<String[]>([])
 
 const queryParams = reactive({
   pageNo: 1,
@@ -128,7 +132,7 @@ const queryParams = reactive({
   nickname: ''
 })
 const queryFormRef = ref<FormInstance | null>(null) // 搜索的表单
-const tagList = ref<any[]>([]) // 公众号标签列表
+const tagList = ref<MpTagApi.SimpleTagVO[]>([]) // 公众号标签列表
 
 /** 侦听公众号变化 **/
 const onAccountChanged = (id: number) => {
@@ -140,6 +144,7 @@ const onAccountChanged = (id: number) => {
 /** 查询列表 */
 const getList = async () => {
   try {
+    multipleSelection.value = []
     loading.value = true
     const data = await MpUserApi.getUserPage(queryParams)
     list.value = data.list
@@ -153,6 +158,9 @@ const getList = async () => {
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  if (isDialog.value) {
+    emitChange()
+  }
 }
 
 /** 重置按钮操作 */
@@ -177,6 +185,39 @@ const handleSync = async () => {
     message.success('开始从微信公众号同步粉丝信息，同步需要一段时间，建议稍后再查询')
     await getList()
   } catch {}
+}
+
+/** Expose*/
+defineExpose({
+  open: (accountId: number) => {
+    onAccountChanged(accountId)
+    isDialog.value = true
+  }
+})
+
+/** Emits*/
+interface Emits {
+  (
+    e: 'change',
+    data: {
+      multipleSelection: any[]
+      total: number
+      queryParams: object
+    }
+  ): void
+  // (e: 'select', user: any): void
+  // (e: 'cancel'): void
+}
+const emit = defineEmits<Emits>()
+const emitChange = () => {
+  emit('change', { multipleSelection: multipleSelection.value, total: total.value, queryParams })
+}
+
+const handleSelectionChange = (val: any[]) => {
+  multipleSelection.value = val
+  if (isDialog.value) {
+    emitChange()
+  }
 }
 
 /** 初始化 */

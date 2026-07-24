@@ -75,12 +75,12 @@
   <!-- 弹窗 -->
   <ContactListModal
     ref="contactTableSelectRef"
-    :customer-id="formData.bizId"
+    :customer-id="customerId"
     @success="handleAddContact"
   />
   <BusinessListModal
     ref="businessTableSelectRef"
-    :customer-id="formData.bizId"
+    :customer-id="customerId"
     @success="handleAddBusiness"
   />
 </template>
@@ -95,19 +95,26 @@ import * as BusinessApi from '@/api/crm/business'
 import ContactListModal from '@/views/crm/contact/components/ContactListModal.vue'
 import * as ContactApi from '@/api/crm/contact'
 
+type FollowUpBusiness = FollowUpRecordVO['businesses'][number]
+type FollowUpContact = FollowUpRecordVO['contacts'][number]
+
 defineOptions({ name: 'FollowUpRecordForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
 const dialogVisible = ref(false) // 弹窗的是否展示
-const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formData = ref({
-  bizType: undefined,
-  bizId: undefined,
-  businesses: [],
-  contacts: []
+  bizType: undefined as number | undefined,
+  bizId: undefined as number | undefined,
+  type: undefined as number | undefined,
+  content: undefined as string | undefined,
+  picUrls: [] as string[],
+  fileUrls: [] as string[],
+  nextTime: undefined,
+  businesses: [] as FollowUpBusiness[],
+  contacts: [] as FollowUpContact[]
 })
 const formRules = reactive({
   type: [{ required: true, message: '跟进类型不能为空', trigger: 'change' }],
@@ -116,6 +123,7 @@ const formRules = reactive({
 })
 
 const formRef = ref() // 表单 Ref
+const customerId = computed(() => formData.value.bizId ?? 0)
 
 /** 打开弹窗 */
 const open = async (bizType: number, bizId: number) => {
@@ -154,7 +162,7 @@ const contactTableSelectRef = ref<InstanceType<typeof ContactListModal>>()
 const handleOpenContact = () => {
   contactTableSelectRef.value?.open()
 }
-const handleAddContact = (contactId: [], newContacts: ContactApi.ContactVO[]) => {
+const handleAddContact = (_contactId: [], newContacts: ContactApi.ContactVO[]) => {
   newContacts.forEach((contact) => {
     if (!formData.value.contacts.some((item) => item.id === contact.id)) {
       formData.value.contacts.push(contact)
@@ -167,7 +175,7 @@ const businessTableSelectRef = ref<InstanceType<typeof BusinessListModal>>()
 const handleOpenBusiness = () => {
   businessTableSelectRef.value?.open()
 }
-const handleAddBusiness = (businessId: [], newBusinesses: BusinessApi.BusinessVO[]) => {
+const handleAddBusiness = (_businessId: [], newBusinesses: BusinessApi.BusinessVO[]) => {
   newBusinesses.forEach((business) => {
     if (!formData.value.businesses.some((item) => item.id === business.id)) {
       formData.value.businesses.push(business)
@@ -181,6 +189,11 @@ const resetForm = () => {
   formData.value = {
     bizId: undefined,
     bizType: undefined,
+    type: undefined,
+    content: undefined,
+    picUrls: [],
+    fileUrls: [],
+    nextTime: undefined,
     businesses: [],
     contacts: []
   }

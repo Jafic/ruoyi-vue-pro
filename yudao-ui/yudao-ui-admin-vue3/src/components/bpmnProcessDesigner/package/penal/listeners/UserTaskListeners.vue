@@ -17,35 +17,28 @@
       />
       <el-table-column label="操作" width="90px">
         <template #default="scope">
-          <el-button size="small" link @click="openListenerForm(scope.row, scope.$index)"
-            >编辑</el-button
-          >
+          <el-button size="small" link @click="openListenerForm(scope.row, scope.$index)">
+            编辑
+          </el-button>
           <el-divider direction="vertical" />
           <el-button
             size="small"
             link
             style="color: #ff4d4f"
             @click="removeListener(scope.row, scope.$index)"
-            >移除</el-button
           >
+            移除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="element-drawer__button">
-      <XButton
-        size="small"
-        type="primary"
-        preIcon="ep:plus"
-        title="添加监听器"
-        @click="openListenerForm(null)"
-      />
-      <XButton
-        type="success"
-        preIcon="ep:select"
-        title="选择监听器"
-        size="small"
-        @click="openProcessListenerDialog"
-      />
+      <el-button size="small" type="primary" @click="openListenerForm(null)">
+        <Icon icon="ep:plus" class="mr-1px" /> 添加监听器
+      </el-button>
+      <el-button type="success" size="small" @click="openProcessListenerDialog">
+        <Icon icon="ep:select" class="mr-1px" /> 选择监听器
+      </el-button>
     </div>
 
     <!-- 监听器 编辑/创建 部分 -->
@@ -183,9 +176,9 @@
       <el-divider />
       <p class="listener-filed__title">
         <span><Icon icon="ep:menu" />注入字段：</span>
-        <el-button size="small" type="primary" @click="openListenerFieldForm(null)"
-          >添加字段</el-button
-        >
+        <el-button size="small" type="primary" @click="openListenerFieldForm(null)">
+          添加字段
+        </el-button>
       </p>
       <el-table
         :data="fieldsListOfListener"
@@ -211,17 +204,18 @@
         />
         <el-table-column label="操作" width="100px">
           <template #default="scope">
-            <el-button size="small" link @click="openListenerFieldForm(scope.row, scope.$index)"
-              >编辑</el-button
-            >
+            <el-button size="small" link @click="openListenerFieldForm(scope.row, scope.$index)">
+              编辑
+            </el-button>
             <el-divider direction="vertical" />
             <el-button
               size="small"
               link
               style="color: #ff4d4f"
               @click="removeListenerField(scope.row, scope.$index)"
-              >移除</el-button
             >
+              移除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -329,7 +323,6 @@ const listenerFieldFormModelVisible = ref(false) // 监听器 注入字段表单
 const editingListenerIndex = ref(-1) // 监听器所在下标，-1 为新增
 const editingListenerFieldIndex = ref(-1) // 字段所在下标，-1 为新增
 const listenerFieldForm = ref<any>({}) // 监听器 注入字段 详情表单
-const bpmnElement = ref()
 const bpmnElementListeners = ref()
 const otherExtensionList = ref()
 const listenerFormRef = ref()
@@ -337,14 +330,21 @@ const listenerFieldFormRef = ref()
 const bpmnInstances = () => (window as any)?.bpmnInstances
 
 const resetListenersList = () => {
-  console.log(
-    bpmnInstances().bpmnElement,
-    'window.bpmnInstances.bpmnElementwindow.bpmnInstances.bpmnElementwindow.bpmnInstances.bpmnElementwindow.bpmnInstances.bpmnElementwindow.bpmnInstances.bpmnElementwindow.bpmnInstances.bpmnElement'
-  )
-  bpmnElement.value = bpmnInstances().bpmnElement
-  otherExtensionList.value = []
+  const instances = bpmnInstances()
+  if (!instances || !instances.bpmnElement) return
+
+  // 直接使用原始BPMN元素，避免Vue响应式代理问题
+  const bpmnElement = instances.bpmnElement
+  const businessObject = bpmnElement.businessObject
+
+  console.log(bpmnElement, 'bpmnElement - resetListenersList')
+
+  otherExtensionList.value =
+    businessObject?.extensionElements?.values?.filter(
+      (ex) => ex.$type !== `${prefix}:TaskListener`
+    ) ?? [] // 保留非监听器类型的扩展属性，避免移除监听器时清空其他配置（如审批人等）。相关案例：https://gitee.com/yudaocode/yudao-ui-admin-vue3/issues/ICMSYC
   bpmnElementListeners.value =
-    bpmnElement.value.businessObject?.extensionElements?.values.filter(
+    businessObject?.extensionElements?.values?.filter(
       (ex) => ex.$type === `${prefix}:TaskListener`
     ) ?? []
   elementListenersList.value = bpmnElementListeners.value.map((listener) =>
@@ -382,10 +382,13 @@ const removeListener = (listener, index?) => {
     cancelButtonText: '取 消'
   })
     .then(() => {
+      const instances = bpmnInstances()
+      if (!instances || !instances.bpmnElement) return
+
       bpmnElementListeners.value.splice(index, 1)
       elementListenersList.value.splice(index, 1)
       updateElementExtensions(
-        bpmnElement.value,
+        instances.bpmnElement,
         otherExtensionList.value.concat(bpmnElementListeners.value)
       )
     })
@@ -395,7 +398,13 @@ const removeListener = (listener, index?) => {
 const saveListenerConfig = async () => {
   let validateStatus = await listenerFormRef.value.validate()
   if (!validateStatus) return // 验证不通过直接返回
+
+  const instances = bpmnInstances()
+  if (!instances || !instances.bpmnElement) return
+
+  const bpmnElement = instances.bpmnElement
   const listenerObject = createListenerObject(listenerForm.value, true, prefix)
+
   if (editingListenerIndex.value === -1) {
     bpmnElementListeners.value.push(listenerObject)
     elementListenersList.value.push(listenerForm.value)
@@ -405,13 +414,10 @@ const saveListenerConfig = async () => {
   }
   // 保存其他配置
   otherExtensionList.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    bpmnElement.businessObject?.extensionElements?.values?.filter(
       (ex) => ex.$type !== `${prefix}:TaskListener`
     ) ?? []
-  updateElementExtensions(
-    bpmnElement.value,
-    otherExtensionList.value.concat(bpmnElementListeners.value)
-  )
+  updateElementExtensions(bpmnElement, otherExtensionList.value.concat(bpmnElementListeners.value))
   // 4. 隐藏侧边栏
   listenerFormModelVisible.value = false
   listenerForm.value = {}
@@ -461,6 +467,10 @@ const openProcessListenerDialog = async () => {
   processListenerDialogRef.value.open('task')
 }
 const selectProcessListener = (listener) => {
+  const instances = bpmnInstances()
+  if (!instances || !instances.bpmnElement) return
+
+  const bpmnElement = instances.bpmnElement
   const listenerForm = initListenerForm2(listener)
   const listenerObject = createListenerObject(listenerForm, true, prefix)
   bpmnElementListeners.value.push(listenerObject)
@@ -468,13 +478,10 @@ const selectProcessListener = (listener) => {
 
   // 保存其他配置
   otherExtensionList.value =
-    bpmnElement.value.businessObject?.extensionElements?.values?.filter(
+    bpmnElement.businessObject?.extensionElements?.values?.filter(
       (ex) => ex.$type !== `${prefix}:TaskListener`
     ) ?? []
-  updateElementExtensions(
-    bpmnElement.value,
-    otherExtensionList.value.concat(bpmnElementListeners.value)
-  )
+  updateElementExtensions(bpmnElement, otherExtensionList.value.concat(bpmnElementListeners.value))
 }
 
 watch(

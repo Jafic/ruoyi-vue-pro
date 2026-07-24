@@ -58,7 +58,7 @@ const canAdd = computed(() => {
   return Activitys.value.length < props.limit
 })
 
-// 拼团活动列表
+// 秒杀活动列表
 const Activitys = ref<SeckillActivityApi.SeckillActivityVO[]>([])
 
 watch(
@@ -134,11 +134,11 @@ const emitActivityChange = () => {
   display: flex;
   width: 60px;
   height: 60px;
+  cursor: pointer;
   border: 1px dashed var(--el-border-color-darker);
   border-radius: 8px;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 
 .spu-pic {

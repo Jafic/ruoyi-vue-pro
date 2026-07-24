@@ -39,8 +39,8 @@
         <el-select v-model="formData.event" placeholder="请选择事件">
           <el-option
             v-for="event in formData.type == 'execution'
-              ? ['start', 'end']
-              : ['create', 'assignment', 'complete', 'delete', 'update', 'timeout']"
+              ? ['开始', '结束']
+              : ['创建', '指派', '完成', '删除', '更新', '超时']"
             :label="event"
             :value="event"
             :key="event"
@@ -86,13 +86,13 @@ const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const formType = ref('') // 表单的类型：create - 新增；update - 修改
 const formData = ref({
-  id: undefined,
-  name: undefined,
-  type: undefined,
-  status: undefined,
-  event: undefined,
-  valueType: undefined,
-  value: undefined
+  id: undefined as number | undefined,
+  name: undefined as string | undefined,
+  type: undefined as string | undefined,
+  status: undefined as number | undefined,
+  event: undefined as string | undefined,
+  valueType: undefined as string | undefined,
+  value: undefined as string | undefined
 })
 const formRules = reactive({
   name: [{ required: true, message: '名字不能为空', trigger: 'blur' }],

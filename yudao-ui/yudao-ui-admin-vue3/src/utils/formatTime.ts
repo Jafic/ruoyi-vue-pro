@@ -54,7 +54,7 @@ export const defaultShortcuts = [
 
 /**
  * 时间日期转换
- * @param date 当前时间，new Date() 格式
+ * @param date 当前时间，支持 new Date()、字符串、时间戳、dayjs 等格式
  * @param format 需要转换的时间格式字符串
  * @description format 字符串随意，如 `YYYY-MM、YYYY-MM-DD`
  * @description format 季度："YYYY-MM-DD HH:mm:ss QQQQ"
@@ -63,13 +63,32 @@ export const defaultShortcuts = [
  * @description format 季度 + 星期 + 几周："YYYY-MM-DD HH:mm:ss WWW QQQQ ZZZ"
  * @returns 返回拼接后的时间字符串
  */
-export function formatDate(date: Date, format?: string): string {
+export function formatDate(date: dayjs.ConfigType, format?: string): string {
   // 日期不存在，则返回空
   if (!date) {
     return ''
   }
   // 日期存在，则进行格式化
   return date ? dayjs(date).format(format ?? 'YYYY-MM-DD HH:mm:ss') : ''
+}
+
+/**
+ * 格式化可为空的时间日期
+ *
+ * @param date 当前时间，new Date() 格式或者字符串时间格式
+ * @param format 需要转换的时间格式字符串
+ * @param emptyText 空值展示文案
+ * @returns 返回格式化后的时间字符串
+ */
+export function formatNullableDate(
+  date?: Date | string | null,
+  format = 'YYYY-MM-DD HH:mm:ss',
+  emptyText = '-'
+): string {
+  if (!date) {
+    return emptyText
+  }
+  return formatDate(date, format) || emptyText
 }
 
 /**
@@ -188,6 +207,20 @@ export function formatPast2(ms: number): string {
   } else {
     return 0 + ' 秒'
   }
+}
+
+/**
+ * 将秒数格式化为 mm:ss，适用于音视频时长、倒计时等
+ *
+ * @param seconds 秒数
+ */
+export function formatSeconds(seconds: number): string {
+  const s = Math.max(0, Math.floor(seconds || 0))
+  const mm = Math.floor(s / 60)
+    .toString()
+    .padStart(2, '0')
+  const ss = (s % 60).toString().padStart(2, '0')
+  return `${mm}:${ss}`
 }
 
 /**

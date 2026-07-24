@@ -24,7 +24,16 @@
         </el-select>
       </el-form-item>
       <HttpConfigForm v-if="IotDataSinkTypeEnum.HTTP === formData.type" v-model="formData.config" />
+      <TcpConfigForm v-if="IotDataSinkTypeEnum.TCP === formData.type" v-model="formData.config" />
+      <WebSocketConfigForm
+        v-if="IotDataSinkTypeEnum.WEBSOCKET === formData.type"
+        v-model="formData.config"
+      />
       <MqttConfigForm v-if="IotDataSinkTypeEnum.MQTT === formData.type" v-model="formData.config" />
+      <DatabaseConfigForm
+        v-if="IotDataSinkTypeEnum.DATABASE === formData.type"
+        v-model="formData.config"
+      />
       <RocketMQConfigForm
         v-if="IotDataSinkTypeEnum.ROCKETMQ === formData.type"
         v-model="formData.config"
@@ -64,12 +73,15 @@ import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { CommonStatusEnum } from '@/utils/constants'
 import { DataSinkApi, DataSinkVO, IotDataSinkTypeEnum } from '@/api/iot/rule/data/sink'
 import {
+  DatabaseConfigForm,
   HttpConfigForm,
   KafkaMQConfigForm,
   MqttConfigForm,
   RabbitMQConfigForm,
   RedisStreamConfigForm,
-  RocketMQConfigForm
+  RocketMQConfigForm,
+  TcpConfigForm,
+  WebSocketConfigForm
 } from './config'
 
 /** IoT 数据流转目的的表单 */
@@ -95,11 +107,23 @@ const formRules = reactive({
   // HTTP 配置
   'config.url': [{ required: true, message: '请求地址不能为空', trigger: 'blur' }],
   'config.method': [{ required: true, message: '请求方法不能为空', trigger: 'blur' }],
+  // TCP 配置 (host 和 port 与 RabbitMQ/Redis 共用)
+  'config.connectTimeoutMs': [{ required: true, message: '连接超时时间不能为空', trigger: 'blur' }],
+  'config.readTimeoutMs': [{ required: true, message: '读取超时时间不能为空', trigger: 'blur' }],
+  'config.dataFormat': [{ required: true, message: '数据格式不能为空', trigger: 'change' }],
+  // WebSocket 配置
+  'config.serverUrl': [
+    { required: true, message: 'WebSocket 服务器地址不能为空', trigger: 'blur' }
+  ],
+  'config.sendTimeoutMs': [{ required: true, message: '发送超时时间不能为空', trigger: 'blur' }],
   // MQTT 配置
   'config.username': [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
   'config.password': [{ required: true, message: '密码不能为空', trigger: 'blur' }],
   'config.clientId': [{ required: true, message: '客户端 ID 不能为空', trigger: 'blur' }],
   'config.topic': [{ required: true, message: '主题不能为空', trigger: 'blur' }],
+  // Database 配置
+  'config.jdbcUrl': [{ required: true, message: 'JDBC 连接地址不能为空', trigger: 'blur' }],
+  'config.tableName': [{ required: true, message: '目标表名不能为空', trigger: 'blur' }],
   // RocketMQ 配置
   'config.nameServer': [{ required: true, message: 'NameServer 地址不能为空', trigger: 'blur' }],
   'config.accessKey': [{ required: true, message: 'AccessKey 不能为空', trigger: 'blur' }],

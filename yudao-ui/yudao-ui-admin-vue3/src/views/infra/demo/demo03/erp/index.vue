@@ -18,12 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="性别" prop="sex">
-        <el-select
-          v-model="queryParams.sex"
-          placeholder="请选择性别"
-          clearable
-          class="!w-240px"
-        >
+        <el-select v-model="queryParams.sex" placeholder="请选择性别" clearable class="!w-240px">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.SYSTEM_USER_SEX)"
             :key="dict.value"
@@ -64,11 +59,11 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
         <el-button
-            type="danger"
-            plain
-            :disabled="isEmpty(checkedIds)"
-            @click="handleDeleteBatch"
-            v-hasPermi="['infra:demo03-student:delete']"
+          type="danger"
+          plain
+          :disabled="isEmpty(checkedIds)"
+          @click="handleDeleteBatch"
+          v-hasPermi="['infra:demo03-student:delete']"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 批量删除
         </el-button>
@@ -88,7 +83,7 @@
       @current-change="handleCurrentChange"
       @selection-change="handleRowCheckboxChange"
     >
-    <el-table-column type="selection" width="55" />
+      <el-table-column type="selection" width="55" />
       <el-table-column label="编号" align="center" prop="id" />
       <el-table-column label="名字" align="center" prop="name" />
       <el-table-column label="性别" align="center" prop="sex">
@@ -147,10 +142,10 @@
   <ContentWrap>
     <el-tabs model-value="demo03Course">
       <el-tab-pane label="学生课程" name="demo03Course">
-        <Demo03CourseList :student-id="currentRow.id" />
+        <Demo03CourseList :student-id="currentRow?.id" />
       </el-tab-pane>
       <el-tab-pane label="学生班级" name="demo03Grade">
-        <Demo03GradeList :student-id="currentRow.id" />
+        <Demo03GradeList :student-id="currentRow?.id" />
       </el-tab-pane>
     </el-tabs>
   </ContentWrap>
@@ -181,7 +176,7 @@ const queryParams = reactive({
   name: undefined,
   sex: undefined,
   description: undefined,
-  createTime: [],
+  createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
@@ -235,15 +230,15 @@ const handleDeleteBatch = async () => {
     // 删除的二次确认
     await message.delConfirm()
     await Demo03StudentApi.deleteDemo03StudentList(checkedIds.value)
-    checkedIds.value = [];
+    checkedIds.value = []
     message.success(t('common.delSuccess'))
-    await getList();
+    await getList()
   } catch {}
 }
 
 const checkedIds = ref<number[]>([])
 const handleRowCheckboxChange = (records: Demo03Student[]) => {
-  checkedIds.value = records.map((item) => item.id);
+  checkedIds.value = records.map((item) => item.id!)
 }
 
 /** 导出按钮操作 */
@@ -262,8 +257,8 @@ const handleExport = async () => {
 }
 
 /** 选中行操作 */
-const currentRow = ref({}) // 选中行
-const handleCurrentChange = (row) => {
+const currentRow = ref<Demo03Student>() // 选中行
+const handleCurrentChange = (row: Demo03Student) => {
   currentRow.value = row
 }
 

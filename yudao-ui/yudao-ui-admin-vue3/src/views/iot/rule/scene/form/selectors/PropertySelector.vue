@@ -219,13 +219,23 @@ const thingModelTSL = ref<IotThingModelTSLResp | null>(null) // 物模型TSL数�
 const propertyGroups = computed(() => {
   const groups: { label: string; options: any[] }[] = []
 
-  if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST) {
-    groups.push({
-      label: THING_MODEL_GROUP_LABELS.PROPERTY,
-      options: propertyList.value.filter((p) => p.type === IoTThingModelTypeEnum.PROPERTY)
-    })
+  // 设备属性上报触发器、定时触发器（条件组中的设备属性条件）
+  if (
+    props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_PROPERTY_POST ||
+    props.triggerType === IotRuleSceneTriggerTypeEnum.TIMER
+  ) {
+    const propertyOptions = propertyList.value.filter(
+      (property) => property.type === IoTThingModelTypeEnum.PROPERTY
+    )
+    if (propertyOptions.length > 0) {
+      groups.push({
+        label: THING_MODEL_GROUP_LABELS.PROPERTY,
+        options: propertyOptions
+      })
+    }
   }
 
+  // 设备事件上报触发器
   if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_EVENT_POST) {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.EVENT,
@@ -233,6 +243,7 @@ const propertyGroups = computed(() => {
     })
   }
 
+  // 设备服务调用触发器
   if (props.triggerType === IotRuleSceneTriggerTypeEnum.DEVICE_SERVICE_INVOKE) {
     groups.push({
       label: THING_MODEL_GROUP_LABELS.SERVICE,

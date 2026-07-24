@@ -15,6 +15,7 @@ const userStore = useUserStoreWithOut()
 const activeName = ref('notice')
 const unreadCount = ref(0) // 未读消息数量
 const list = ref<any[]>([]) // 消息列表
+let unreadCountTimer: ReturnType<typeof setInterval> | undefined
 
 // 获得消息列表
 const getList = async () => {
@@ -42,7 +43,7 @@ onMounted(() => {
   // 首次加载小红点
   getUnreadCount()
   // 轮询刷新小红点
-  setInterval(
+  unreadCountTimer = setInterval(
     () => {
       if (userStore.getIsSetUser) {
         getUnreadCount()
@@ -52,6 +53,13 @@ onMounted(() => {
     },
     1000 * 60 * 2
   )
+})
+
+onBeforeUnmount(() => {
+  if (unreadCountTimer) {
+    clearInterval(unreadCountTimer)
+    unreadCountTimer = undefined
+  }
 })
 </script>
 <template>
@@ -83,12 +91,30 @@ onMounted(() => {
       </ElTabs>
       <!-- 更多 -->
       <div style="margin-top: 10px; text-align: right">
-        <XButton preIcon="ep:view" title="查看全部" type="primary" @click="goMyList" />
+        <el-button type="primary" @click="goMyList">
+          <Icon icon="ep:view" class="mr-1px" /> 查看全部
+        </el-button>
       </div>
     </ElPopover>
   </div>
 </template>
 <style lang="scss" scoped>
+// 铃铛对齐修复：
+// DOM 链路 div.message > ElPopover > ElBadge(inline-block) > Icon
+// 默认 ElBadge 是 inline-block，在父 flex 容器里按 baseline 对齐，导致图标比其他 ElIcon 视觉偏下 1-2px
+// 解法：让 .message 本身变 flex-center 容器，且穿透设置内部 .el-badge 也为 flex-center
+// 这样从父到子整条链路都走几何中心对齐，不再受 inline-block baseline 影响
+.message {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  :deep(.el-badge) {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .message-empty {
   display: flex;
   flex-direction: column;

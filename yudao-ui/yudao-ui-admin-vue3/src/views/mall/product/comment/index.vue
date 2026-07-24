@@ -110,7 +110,7 @@
               :key="index"
               :src="picUrl"
               :preview-src-list="scope.row.picUrls"
-              :initial-index="index"
+              :initial-index="Number(index)"
               class="h-40px w-40px"
               preview-teleported
             />
@@ -179,7 +179,6 @@ import ReplyForm from './ReplyForm.vue'
 defineOptions({ name: 'ProductComment' })
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数

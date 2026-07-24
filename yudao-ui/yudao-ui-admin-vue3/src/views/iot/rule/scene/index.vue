@@ -199,10 +199,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="最近触发" prop="lastTriggeredTime" width="180">
+        <el-table-column label="最近触发" prop="lastTriggerTime" width="180">
           <template #default="{ row }">
-            <span v-if="row.lastTriggeredTime">
-              {{ formatDate(row.lastTriggeredTime) }}
+            <span v-if="row.lastTriggerTime">
+              {{ formatDate(row.lastTriggerTime) }}
             </span>
             <span v-else class="text-gray-400">未触发</span>
           </template>
@@ -282,7 +282,6 @@ const loading = ref(true) // 列表的加载中
 const list = ref<IotSceneRule[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const selectedRows = ref<IotSceneRule[]>([]) // 选中的行数据
-const queryFormRef = ref() // 搜索的表单
 
 /** 表单状态 */
 const formVisible = ref(false) // 是否可见

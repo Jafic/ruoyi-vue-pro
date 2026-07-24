@@ -8,8 +8,8 @@
     </template>
   </Form>
   <div style="text-align: center">
-    <XButton :title="t('common.save')" type="primary" @click="submit()" />
-    <XButton :title="t('common.reset')" type="danger" @click="init()" />
+    <el-button type="primary" @click="submit()">{{ t('common.save') }}</el-button>
+    <el-button type="danger" @click="init()">{{ t('common.reset') }}</el-button>
   </div>
 </template>
 <script lang="ts" setup>
@@ -48,7 +48,7 @@ const rules = reactive<FormRules>({
   mobile: [
     { required: true, message: t('profile.rules.phone'), trigger: 'blur' },
     {
-      pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      pattern: /^1[3-9]\d{9}$/,
       message: t('profile.rules.truephone'),
       trigger: 'blur'
     }

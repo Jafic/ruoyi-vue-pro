@@ -5,6 +5,7 @@ export interface DeviceVO {
   id: number // 设备 ID，主键，自增
   deviceName: string // 设备名称
   productId: number // 产品编号
+  productName?: string // 产品名称（只有部分接口返回，例如 getDeviceLocationList）
   productKey: string // 产品标识
   deviceType: number // 设备类型
   nickname: string // 设备备注名称
@@ -20,8 +21,6 @@ export interface DeviceVO {
   mqttClientId: string // MQTT 客户端 ID
   mqttUsername: string // MQTT 用户名
   mqttPassword: string // MQTT 密码
-  authType: string // 认证类型
-  locationType: number // 定位类型
   latitude?: number // 设备位置的纬度
   longitude?: number // 设备位置的经度
   areaId: number // 地区编码
@@ -47,14 +46,6 @@ export interface IotDevicePropertyRespVO {
   identifier: string // 属性标识符
   value: string // 最新值
   updateTime: Date // 更新时间
-}
-
-// TODO @芋艿：调整到 constants
-// IoT 设备状态枚举
-export enum DeviceStateEnum {
-  INACTIVE = 0, // 未激活
-  ONLINE = 1, // 在线
-  OFFLINE = 2 // 离线
 }
 
 // 设备认证参数 VO
@@ -123,6 +114,11 @@ export const DeviceApi = {
     return await request.get({ url: `/iot/device/simple-list?`, params: { deviceType, productId } })
   },
 
+  // 获取设备位置列表（用于地图展示）
+  getDeviceLocationList: async () => {
+    return await request.get<DeviceVO[]>({ url: `/iot/device/location-list` })
+  },
+
   // 根据产品编号，获取设备的精简信息列表
   getDeviceListByProductId: async (productId: number) => {
     return await request.get({ url: `/iot/device/simple-list?`, params: { productId } })
@@ -161,5 +157,28 @@ export const DeviceApi = {
   // 发送设备消息
   sendDeviceMessage: async (params: IotDeviceMessageSendReqVO) => {
     return await request.post({ url: `/iot/device/message/send`, data: params })
+  },
+
+  // 绑定子设备到网关
+  bindDeviceGateway: async (data: { subIds: number[]; gatewayId: number }) => {
+    return await request.put({ url: `/iot/device/bind-gateway`, data })
+  },
+
+  // 解绑子设备与网关
+  unbindDeviceGateway: async (data: { subIds: number[]; gatewayId: number }) => {
+    return await request.put({ url: `/iot/device/unbind-gateway`, data })
+  },
+
+  // 获取网关的子设备列表
+  getSubDeviceList: async (gatewayId: number) => {
+    return await request.get<DeviceVO[]>({
+      url: `/iot/device/sub-device-list`,
+      params: { gatewayId }
+    })
+  },
+
+  // 获取未绑定网关的子设备分页
+  getUnboundSubDevicePage: async (params: any) => {
+    return await request.get({ url: `/iot/device/unbound-sub-device-page`, params })
   }
 }

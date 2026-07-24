@@ -1,4 +1,6 @@
 <template>
+  <doc-alert title="【营销】内容管理" url="https://doc.iocoder.cn/mall/promotion-content/" />
+
   <ContentWrap>
     <!-- 搜索工作栏 -->
     <el-form
@@ -140,7 +142,6 @@ const queryParams = reactive({
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
 
 /** 分类图预览 */
 const imagePreview = (imgUrl: string) => {

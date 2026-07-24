@@ -52,7 +52,6 @@ export const setCssVar = (prop: string, val: any, dom = document.documentElement
  * @param {Array} ary 查找的数组
  * @param {Functon} fn 判断的方法
  */
-// eslint-disable-next-line
 export const findIndex = <T = Recordable>(ary: Array<T>, fn: Fn): number => {
   if (ary.findIndex) {
     return ary.findIndex(fn)
@@ -216,10 +215,10 @@ export const generateUUID = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     let random = Math.random() * 16
     if (timestamp > 0) {
-      random = (timestamp + random) % 16 | 0
+      random = ((timestamp + random) % 16) | 0
       timestamp = Math.floor(timestamp / 16)
     } else {
-      random = (performanceNow + random) % 16 | 0
+      random = ((performanceNow + random) % 16) | 0
       performanceNow = Math.floor(performanceNow / 16)
     }
     return (c === 'x' ? random : (random & 0x3) | 0x8).toString(16)
@@ -375,6 +374,13 @@ export const yuanToFen = (amount: string | number): number => {
  */
 export const fenToYuan = (price: string | number): string => {
   return formatToFraction(price)
+}
+
+/**
+ * 分转元，返回数字
+ */
+export const fenToYuanNumber = (price: string | number): number => {
+  return Number(fenToYuan(price))
 }
 
 /**
@@ -534,4 +540,16 @@ export const subString = (str: string, start: number, end: number) => {
     return str.slice(start, end)
   }
   return str
+}
+
+/** HTML 转义函数，防止 XSS */
+export const escapeHtml = (text: string): string => {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }
+  return text.replace(/[&<>"']/g, (char) => map[char])
 }

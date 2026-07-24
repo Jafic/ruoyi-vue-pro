@@ -29,9 +29,15 @@
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
+              <descriptions-item-label icon="ep:message" label="邮箱" />
+            </template>
+            {{ user.email || '空' }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
               <descriptions-item-label icon="fa:mars-double" label="性别" />
             </template>
-            <dict-tag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="user.sex" />
+            <dict-tag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="user.sex ?? 0" />
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
@@ -89,9 +95,15 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
+            <descriptions-item-label icon="ep:message" label="邮箱" />
+          </template>
+          {{ user.email || '空' }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
             <descriptions-item-label icon="fa:mars-double" label="性别" />
           </template>
-          <dict-tag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="user.sex" />
+          <dict-tag :type="DICT_TYPE.SYSTEM_USER_SEX" :value="user.sex ?? 0" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -151,8 +163,8 @@ withDefaults(defineProps<{ user: UserApi.UserVO; mode?: string }>(), {
     justify-content: space-between;
 
     .el-descriptions__label {
-      width: 120px;
       display: block;
+      width: 120px;
       text-align: left;
     }
 

@@ -59,7 +59,14 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="120">
         <template #default="scope">
-          <el-button link type="primary" @click="handleTaskDetail(scope.row.id)"> 详情 </el-button>
+          <el-button
+            link
+            type="primary"
+            @click="handleTaskDetail(scope.row.id)"
+            v-hasPermi="['iot:ota-task:query']"
+          >
+            详情
+          </el-button>
           <el-button
             v-if="scope.row.status === IoTOtaTaskStatusEnum.IN_PROGRESS.value"
             link
@@ -122,7 +129,6 @@ const queryParams = reactive({
   name: '',
   firmwareId: props.firmwareId
 })
-const queryFormRef = ref() // 查询表单引用
 const taskFormRef = ref() // 任务表单引用
 const taskDetailRef = ref() // 任务详情引用
 

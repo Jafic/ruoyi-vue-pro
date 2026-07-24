@@ -106,6 +106,7 @@ const getSpuDetails = async (
     typeof skuIds === 'undefined' ? spu?.skus : spu?.skus?.filter((sku) => skuIds.includes(sku.id!))
   selectSkus?.forEach((sku) => {
     let config: SeckillActivityApi.SeckillProductVO = {
+      spuId: spu.id!,
       skuId: sku.id!,
       stock: 0,
       seckillPrice: 0
@@ -113,7 +114,7 @@ const getSpuDetails = async (
     if (typeof products !== 'undefined') {
       const product = products.find((item) => item.skuId === sku.id)
       if (product) {
-        product.seckillPrice = formatToFraction(product.seckillPrice)
+        product.seckillPrice = Number(formatToFraction(product.seckillPrice))
       }
       config = product || config
     }
@@ -144,7 +145,11 @@ const open = async (type: string, id?: number) => {
       const data = (await SeckillActivityApi.getSeckillActivity(
         id
       )) as SeckillActivityApi.SeckillActivityVO
-      await getSpuDetails(data.spuId!, data.products?.map((sku) => sku.skuId), data.products)
+      await getSpuDetails(
+        data.spuId!,
+        data.products?.map((sku) => sku.skuId),
+        data.products
+      )
       formRef.value.setValues(data)
     } finally {
       formLoading.value = false

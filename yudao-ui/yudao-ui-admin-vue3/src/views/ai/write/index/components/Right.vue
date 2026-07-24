@@ -45,7 +45,7 @@
 import { useClipboard } from '@vueuse/core'
 
 const message = useMessage() // 消息弹窗
-const { copied, copy } = useClipboard() // 粘贴板
+const { copied, copy } = useClipboard({ legacy: true }) // 粘贴板
 
 const props = defineProps({
   content: {
@@ -110,11 +110,12 @@ watch(copied, (val) => {
   flex-direction: column;
 
   :deep(.el-card__body) {
+    @extend .hide-scroll-bar;
+
+    padding: 0;
+    overflow-y: auto;
     box-sizing: border-box;
     flex-grow: 1;
-    overflow-y: auto;
-    padding: 0;
-    @extend .hide-scroll-bar;
   }
 }
 </style>

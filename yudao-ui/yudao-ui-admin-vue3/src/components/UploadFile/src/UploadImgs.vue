@@ -1,5 +1,5 @@
 <template>
-  <div class="upload-box">
+  <div class="upload-box" :style="uploadStyle">
     <el-upload
       v-model:file-list="fileList"
       :accept="fileType.join(',')"
@@ -85,6 +85,12 @@ const props = defineProps({
   directory: propTypes.string.def(undefined) // 上传目录 ==> 非必传（默认为 undefined）
 })
 
+const uploadStyle = computed(() => ({
+  '--upload-width': props.width,
+  '--upload-height': props.height,
+  '--upload-border-radius': props.borderradius
+}))
+
 const { uploadUrl, httpRequest } = useUpload(props.directory)
 
 const fileList = ref<UploadUserFile[]>([])
@@ -129,10 +135,13 @@ interface UploadEmits {
 const emit = defineEmits<UploadEmits>()
 const uploadSuccess: UploadProps['onSuccess'] = (res: any): void => {
   message.success('上传成功')
+  const response = res as { data: string }
   // 删除自身
-  const index = fileList.value.findIndex((item) => item.response?.data === res.data)
+  const index = fileList.value.findIndex(
+    (item) => (item.response as { data?: string } | undefined)?.data === response.data
+  )
   fileList.value.splice(index, 1)
-  uploadList.value.push({ name: res.data, url: res.data })
+  uploadList.value.push({ name: response.data, url: response.data })
   if (uploadList.value.length == uploadNumber.value) {
     fileList.value.push(...uploadList.value)
     uploadList.value = []
@@ -238,7 +247,7 @@ const handleExceed = () => {
       padding: 0;
       overflow: hidden;
       border: 1px dashed var(--el-border-color-darker);
-      border-radius: v-bind(borderradius);
+      border-radius: var(--upload-border-radius);
 
       &:hover {
         border: 1px dashed var(--el-color-primary);
@@ -252,10 +261,10 @@ const handleExceed = () => {
 
     .el-upload-list__item,
     .el-upload--picture-card {
-      width: v-bind(width);
-      height: v-bind(height);
+      width: var(--upload-width);
+      height: var(--upload-height);
       background-color: transparent;
-      border-radius: v-bind(borderradius);
+      border-radius: var(--upload-border-radius);
     }
 
     .upload-image {

@@ -5,6 +5,7 @@ export interface UserVO {
   username: string
   nickname: string
   deptId: number
+  deptName?: string
   postIds: string[]
   email: string
   mobile: string
@@ -17,9 +18,32 @@ export interface UserVO {
   createTime: Date
 }
 
+// 获取用户精简信息列表
+export const getSimpleUserList = (): Promise<UserVO[]> => {
+  return request.get({ url: '/system/user/simple-list' })
+}
+
+// 按用户编号查询用户精简信息（点头像弹名片）
+export const getSimpleUser = (id: number | string) => {
+  return request.get<UserVO>({ url: '/system/user/get-simple', params: { id } })
+}
+
+// 按昵称模糊搜索用户（加好友）
+export const getSimpleUserListByNickname = (nickname: string) => {
+  return request.get<UserVO[]>({
+    url: '/system/user/list-by-nickname',
+    params: { nickname }
+  })
+}
+
 // 查询用户管理列表
 export const getUserPage = (params: PageParam) => {
   return request.get({ url: '/system/user/page', params })
+}
+
+// 查询用户管理列表
+export const getUserList = (ids: number[]) => {
+  return request.get({ url: '/system/user/list', params: { ids: ids.join(',') } })
 }
 
 // 查询用户详情
@@ -73,9 +97,4 @@ export const updateUserStatus = (id: number, status: number) => {
     status
   }
   return request.put({ url: '/system/user/update-status', data: data })
-}
-
-// 获取用户精简信息列表
-export const getSimpleUserList = (): Promise<UserVO[]> => {
-  return request.get({ url: '/system/user/simple-list' })
 }
